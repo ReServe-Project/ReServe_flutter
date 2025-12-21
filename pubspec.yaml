@@ -27,7 +27,7 @@ flutter:
   assets:
     - img/
     - assets/images/bg_gym.jpg
-    - assets/images/bg_welcome.jpg
+    - assets/images/bg_welcome.png
     - assets/images/R_logo.png
     - assets/images/empty.png
     - assets/images/logo_reserve.png

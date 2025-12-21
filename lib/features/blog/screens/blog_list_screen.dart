@@ -9,6 +9,8 @@ import 'blog_detail_screen.dart';
 import 'create_blog_screen.dart';
 import 'edit_blog_screen.dart';
 import '../../../core/auth/auth_provider.dart';
+import 'package:reserve_mobile/core/widgets/reserve_navbar.dart';
+
 
 class BlogListScreen extends StatefulWidget {
   const BlogListScreen({super.key});
@@ -34,6 +36,7 @@ class _BlogListScreenState extends State<BlogListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF9F5F0),
+      bottomNavigationBar: const ReserveNavbar(active: NavItem.blog),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(

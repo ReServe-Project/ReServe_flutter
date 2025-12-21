@@ -57,7 +57,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return BackgroundScaffold(
-      backgroundAsset: 'assets/images/bg_welcome.jpg',
+      backgroundAsset: 'assets/images/bg_welcome.png',
       overlayOpacity: 0.50,
       child: Center(
         child: ConstrainedBox(

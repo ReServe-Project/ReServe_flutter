@@ -62,11 +62,11 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return BackgroundScaffold(
+      bottomNavigationBar: const ReserveNavbar(active: NavItem.profile),
       backgroundAsset: 'assets/images/bg_gym.jpg',
       overlayOpacity: 0.55,
       child: Column(
         children: [
-          const ReserveNavbar(),
           Expanded(
             child: FutureBuilder<UserProfile>(
               future: _futureProfile,
@@ -175,17 +175,6 @@ class _ProfilePageState extends State<ProfilePage> {
                         },
                         icon: const Icon(Icons.edit),
                         label: const Text('Edit Profile'),
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton.icon(
-                        onPressed: () {
-                          Navigator.pushNamed(context, AppRoutes.blog);
-                        },
-                        icon: const Icon(Icons.article),
-                        label: const Text('View Blog'),
                       ),
                     ),
                     const SizedBox(height: 12),

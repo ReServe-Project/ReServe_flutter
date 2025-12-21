@@ -16,9 +16,9 @@ class ClassDetailPage extends StatelessWidget {
       // fallback if somehow no id
       return Scaffold(
         backgroundColor: const Color(0xFFFDF3EE),
+        bottomNavigationBar: const ReserveNavbar(active: NavItem.classes),
         body: Column(
           children: [
-            const ReserveNavbar(active: NavItem.classes),
             const Expanded(
               child: Center(child: Text("Invalid class (missing id).")),
             ),
@@ -29,9 +29,9 @@ class ClassDetailPage extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: const Color(0xFFFDF3EE),
+      bottomNavigationBar: const ReserveNavbar(active: NavItem.classes),
       body: Column(
         children: [
-          const ReserveNavbar(active: NavItem.classes),
           Expanded(
             child: FutureBuilder<FitnessClass>(
               future: ClassesService.fetchById(context, id),

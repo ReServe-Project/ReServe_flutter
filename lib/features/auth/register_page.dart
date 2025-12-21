@@ -82,7 +82,7 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     return BackgroundScaffold(
-      backgroundAsset: 'assets/images/bg_welcome.jpg',
+      backgroundAsset: 'assets/images/bg_welcome.png',
       overlayOpacity: 0.50,
       child: Center(
         child: ConstrainedBox(
