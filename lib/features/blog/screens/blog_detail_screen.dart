@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../providers/blog_provider.dart';
 import '../../../core/utils/django_image_proxy.dart';
@@ -31,7 +32,7 @@ class _BlogDetailScreenState extends State<BlogDetailScreen> {
         backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          icon: const Icon(Icons.chevron_left_rounded, color: Colors.black),
           onPressed: () {
             context.read<BlogProvider>().clearSelectedBlog();
             Navigator.pop(context);
@@ -83,10 +84,10 @@ class _BlogDetailScreenState extends State<BlogDetailScreen> {
                       // Title
                       Text(
                         blog.title,
-                        style: const TextStyle(
+                        style: GoogleFonts.poppins(
                           fontSize: 28,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFF5C3D2E),
+                          fontWeight: FontWeight.w800,
+                          color: const Color(0xFFA44E22),
                         ),
                       ),
                       const SizedBox(height: 12),

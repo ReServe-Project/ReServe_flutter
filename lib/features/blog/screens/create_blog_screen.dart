@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../../auth/login_page.dart';
 import '../../../core/auth/auth_provider.dart';
@@ -37,7 +38,7 @@ class _CreateBlogScreenState extends State<CreateBlogScreen> {
           backgroundColor: Colors.white,
           elevation: 0,
           leading: IconButton(
-            icon: const Icon(Icons.arrow_back, color: Colors.black),
+            icon: const Icon(Icons.chevron_left_rounded, color: Colors.black),
             onPressed: () => Navigator.pop(context),
           ),
           title: const Text('Create Blog'),
@@ -70,18 +71,18 @@ class _CreateBlogScreenState extends State<CreateBlogScreen> {
         backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          icon: const Icon(Icons.chevron_left_rounded, color: Colors.black),
           onPressed: () => Navigator.pop(context),
         ),
-        title: const Text(
+        title: Text(
           'Create Blog',
-          style: TextStyle(
-            color: Color(0xFF5C3D2E),
-            fontSize: 24,
+          style: GoogleFonts.poppins(
+            color: const Color(0xFF5C3D2E),
+            fontSize: 22,
             fontWeight: FontWeight.bold,
           ),
         ),
-        centerTitle: false,
+        centerTitle: true,
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -95,7 +96,7 @@ class _CreateBlogScreenState extends State<CreateBlogScreen> {
                 const Text(
                   'Title',
                   style: TextStyle(
-                    fontSize: 16,
+                    fontSize: 14,
                     fontWeight: FontWeight.w600,
                     color: Color(0xFF2D3E50),
                   ),
@@ -142,7 +143,7 @@ class _CreateBlogScreenState extends State<CreateBlogScreen> {
                 const Text(
                   'Thumbnail',
                   style: TextStyle(
-                    fontSize: 16,
+                    fontSize: 14,
                     fontWeight: FontWeight.w600,
                     color: Color(0xFF2D3E50),
                   ),
@@ -183,7 +184,7 @@ class _CreateBlogScreenState extends State<CreateBlogScreen> {
                 const Text(
                   'Content',
                   style: TextStyle(
-                    fontSize: 16,
+                    fontSize: 14,
                     fontWeight: FontWeight.w600,
                     color: Color(0xFF2D3E50),
                   ),
@@ -250,7 +251,7 @@ class _CreateBlogScreenState extends State<CreateBlogScreen> {
                           style: TextStyle(
                             color: Color(0xFFE67E22),
                             fontWeight: FontWeight.w600,
-                            fontSize: 16,
+                            fontSize: 13,
                           ),
                         ),
                       ),
@@ -285,7 +286,7 @@ class _CreateBlogScreenState extends State<CreateBlogScreen> {
                                     style: TextStyle(
                                       color: Colors.white,
                                       fontWeight: FontWeight.w600,
-                                      fontSize: 16,
+                                      fontSize: 13,
                                     ),
                                   ),
                           );

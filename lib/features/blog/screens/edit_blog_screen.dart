@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/auth/auth_provider.dart';
@@ -27,9 +28,7 @@ class _EditBlogScreenState extends State<EditBlogScreen> {
   void initState() {
     super.initState();
     _titleController = TextEditingController(text: widget.blog.title);
-    _thumbnailController = TextEditingController(
-      text: widget.blog.thumbnail ?? '',
-    );
+    _thumbnailController = TextEditingController(text: widget.blog.thumbnail ?? '');
     _contentController = TextEditingController(text: widget.blog.content);
   }
 
@@ -74,8 +73,7 @@ class _EditBlogScreenState extends State<EditBlogScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            blogProvider.errorMessage ??
-                'Failed to update blog. Please try again.',
+            blogProvider.errorMessage ?? 'Failed to update blog. Please try again.',
           ),
         ),
       );
@@ -86,6 +84,7 @@ class _EditBlogScreenState extends State<EditBlogScreen> {
   Widget build(BuildContext context) {
     final auth = context.watch<AuthProvider>();
 
+    // Check if user is logged in
     if (!auth.isLoggedIn) {
       return Scaffold(
         backgroundColor: const Color(0xFFF9F5F0),
@@ -93,7 +92,7 @@ class _EditBlogScreenState extends State<EditBlogScreen> {
           backgroundColor: Colors.white,
           elevation: 0,
           leading: IconButton(
-            icon: const Icon(Icons.arrow_back, color: Colors.black),
+            icon: const Icon(Icons.chevron_left_rounded, color: Colors.black),
             onPressed: () => Navigator.pop(context),
           ),
           title: const Text('Edit Blog'),
@@ -126,18 +125,18 @@ class _EditBlogScreenState extends State<EditBlogScreen> {
         backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          icon: const Icon(Icons.chevron_left_rounded, color: Colors.black),
           onPressed: () => Navigator.pop(context),
         ),
-        title: const Text(
+        title: Text(
           'Edit Blog',
-          style: TextStyle(
-            color: Color(0xFF5C3D2E),
-            fontSize: 24,
+          style: GoogleFonts.poppins(
+            color: const Color(0xFF5C3D2E),
+            fontSize: 22,
             fontWeight: FontWeight.bold,
           ),
         ),
-        centerTitle: false,
+        centerTitle: true,
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -147,10 +146,11 @@ class _EditBlogScreenState extends State<EditBlogScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // Title field
                 const Text(
                   'Title',
                   style: TextStyle(
-                    fontSize: 16,
+                    fontSize: 14,
                     fontWeight: FontWeight.w600,
                     color: Color(0xFF2D3E50),
                   ),
@@ -193,10 +193,11 @@ class _EditBlogScreenState extends State<EditBlogScreen> {
                 ),
                 const SizedBox(height: 20),
 
+                // Thumbnail field
                 const Text(
                   'Thumbnail',
                   style: TextStyle(
-                    fontSize: 16,
+                    fontSize: 14,
                     fontWeight: FontWeight.w600,
                     color: Color(0xFF2D3E50),
                   ),
@@ -233,10 +234,11 @@ class _EditBlogScreenState extends State<EditBlogScreen> {
                 ),
                 const SizedBox(height: 20),
 
+                // Content field
                 const Text(
                   'Content',
                   style: TextStyle(
-                    fontSize: 16,
+                    fontSize: 14,
                     fontWeight: FontWeight.w600,
                     color: Color(0xFF2D3E50),
                   ),
@@ -281,13 +283,12 @@ class _EditBlogScreenState extends State<EditBlogScreen> {
                 ),
                 const SizedBox(height: 30),
 
+                // Buttons
                 Row(
                   children: [
                     Expanded(
                       child: ElevatedButton(
-                        onPressed: _submitting
-                            ? null
-                            : () => Navigator.pop(context),
+                        onPressed: _submitting ? null : () => Navigator.pop(context),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.white,
                           side: const BorderSide(
@@ -304,7 +305,7 @@ class _EditBlogScreenState extends State<EditBlogScreen> {
                           style: TextStyle(
                             color: Color(0xFFE67E22),
                             fontWeight: FontWeight.w600,
-                            fontSize: 16,
+                            fontSize: 13,
                           ),
                         ),
                       ),
@@ -322,18 +323,18 @@ class _EditBlogScreenState extends State<EditBlogScreen> {
                         ),
                         child: _submitting
                             ? const SizedBox(
-                                height: 18,
-                                width: 18,
+                                height: 20,
+                                width: 20,
                                 child: CircularProgressIndicator(
-                                  strokeWidth: 2,
+                                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                                 ),
                               )
                             : const Text(
-                                'Save',
+                                'Update',
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.w600,
-                                  fontSize: 16,
+                                  fontSize: 13,
                                 ),
                               ),
                       ),
