@@ -11,6 +11,8 @@ import '../../features/blog/screens/blog_detail_screen.dart';
 import '../../home_search/home/landing_screen.dart';
 import '../../home_search/search/classes_search_page.dart';
 import '../../personal_goal/screens/PersonalGoal_page.dart';
+import '../../features/checkout/pages/booking_history_page.dart';
+
 
 class AppRouter {
   static const String initialRoute = AppRoutes.splash;
@@ -32,6 +34,12 @@ class AppRouter {
         return MaterialPageRoute(
           builder: (_) => BlogDetailScreen(blogId: blogId ?? ''),
         );
+
+      case AppRoutes.history:
+        return MaterialPageRoute(
+          builder: (_) => const BookingHistoryPage(),
+        );
+
       case AppRoutes.home:
         return MaterialPageRoute(builder: (_) => const LandingScreen());
       case AppRoutes.classes:

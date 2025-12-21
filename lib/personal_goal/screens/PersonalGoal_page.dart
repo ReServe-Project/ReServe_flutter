@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 
 import '../../core/auth/auth_provider.dart';
 import '../../core/widgets/reserve_navbar.dart';
-import '../../core/widgets/reserve_drawer.dart';
 import '../../features/profile/services/profile_api.dart';
 import '../../features/profile/models/user_profile.dart';
 import '../models/PersonalGoal.dart';
@@ -343,7 +342,6 @@ class _PersonalGoalsPageState extends State<PersonalGoalsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: _bg,
-      drawer: const ReserveDrawer(),
       body: Column(
         children: [
           const ReserveNavbar(active: NavItem.goals),

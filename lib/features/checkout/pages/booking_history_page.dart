@@ -4,7 +4,7 @@ import '../models/booking_model.dart';
 import '../services/booking_service.dart';
 import 'edit_booking_page.dart';
 
-import 'package:reserve_mobile/core/widgets/reserve_drawer.dart';
+import 'package:reserve_mobile/core/widgets/reserve_navbar.dart';
 import 'package:reserve_mobile/core/config/app_config.dart';
 
 import 'package:reserve_mobile/home_search/models/fitness_class.dart';
@@ -55,7 +55,7 @@ class _BookingHistoryPageState extends State<BookingHistoryPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: const ReserveDrawer(),
+      drawer: const ReserveNavbar(),
       backgroundColor: const Color(0xFFF3F4F6),
       body: SafeArea(
         child: Center(

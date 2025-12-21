@@ -8,4 +8,5 @@ class AppRoutes {
   static const String home = '/home';
   static const String classes = '/classes';
   static const String personalGoals = '/personal-goals';
+  static const String history = '/history';
 }
