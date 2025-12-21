@@ -20,8 +20,8 @@ class ClassReviewsSection extends StatefulWidget {
 }
 
 class _ClassReviewsSectionState extends State<ClassReviewsSection> {
-  List<Reviews> _reviews = [];
-  Reviews? _userReview;
+  List<Review> _reviews = [];
+  Review? _userReview;
   bool _isLoading = true;
 
   @override
@@ -41,7 +41,7 @@ class _ClassReviewsSectionState extends State<ClassReviewsSection> {
         if (auth.isLoggedIn && auth.username != null) {
           try {
             _userReview = reviews.firstWhere(
-                  (r) => r.user == auth.username,
+              (r) => r.username == auth.username,
             );
           } catch (_) {
             _userReview = null;
@@ -116,8 +116,8 @@ class _ClassReviewsSectionState extends State<ClassReviewsSection> {
 
   double get averageRating {
     if (_reviews.isEmpty) return 0;
-    return _reviews
-        .map((r) => r.rating)
+  return _reviews
+    .map((r) => r.rating)
         .reduce((a, b) => a + b) /
         _reviews.length;
   }
@@ -296,17 +296,17 @@ class _ClassReviewsSectionState extends State<ClassReviewsSection> {
                       MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          r.user,
+                          r.username,
                           style: const TextStyle(
                               fontWeight: FontWeight.bold),
                         ),
-                        if (context
-                            .read<AuthProvider>()
-                            .isLoggedIn &&
-                            context
-                                .read<AuthProvider>()
-                                .username ==
-                                r.user)
+            if (context
+              .read<AuthProvider>()
+              .isLoggedIn &&
+              context
+                .read<AuthProvider>()
+                .username ==
+                r.username)
                           Container(
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 8, vertical: 4),
@@ -327,15 +327,13 @@ class _ClassReviewsSectionState extends State<ClassReviewsSection> {
                       ],
                     ),
                     Row(
-                      children: List.generate(3, (i) {
-                        return Icon(
-                          i + 1 <= r.rating
-                              ? Icons.star
-                              : Icons.star_border,
-                          color: Colors.amber,
-                          size: 16,
-                        );
-                      }),
+                        children: List.generate(3, (i) {
+                          return Icon(
+                            i + 1 <= r.rating ? Icons.star : Icons.star_border,
+                            color: Colors.amber,
+                            size: 16,
+                          );
+                        }),
                     ),
                     const SizedBox(height: 6),
                     Text(r.comment),

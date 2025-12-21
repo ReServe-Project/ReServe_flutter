@@ -19,7 +19,7 @@ class ReviewService {
     return context.read<AuthProvider>().request;
   }
 
-  static Future<List<Reviews>> fetchReviews(BuildContext context, int classId) async {
+  static Future<List<Review>> fetchReviews(BuildContext context, int classId) async {
     final request = _req(context);
     final url = _reviewsJsonUrl(classId);
 
@@ -29,7 +29,7 @@ class ReviewService {
       throw Exception("Failed to load reviews");
     }
 
-    return res.map((e) => Reviews.fromJson(Map<String, dynamic>.from(e))).toList();
+    return res.map((e) => Review.fromJson(Map<String, dynamic>.from(e))).toList();
   }
 
   static Future<Map<String, dynamic>> submitReview({
