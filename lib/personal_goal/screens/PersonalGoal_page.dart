@@ -3,11 +3,12 @@ import 'package:provider/provider.dart';
 
 import '../../core/auth/auth_provider.dart';
 import '../../core/widgets/reserve_navbar.dart';
-import '../../core/widgets/reserve_drawer.dart';
 import '../../features/profile/services/profile_api.dart';
 import '../../features/profile/models/user_profile.dart';
 import '../models/PersonalGoal.dart';
 import '../services/personal_goal_api.dart';
+import 'package:reserve_mobile/core/widgets/reserve_navbar.dart';
+
 
 class PersonalGoalsPage extends StatefulWidget {
   const PersonalGoalsPage({super.key});
@@ -343,10 +344,9 @@ class _PersonalGoalsPageState extends State<PersonalGoalsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: _bg,
-      drawer: const ReserveDrawer(),
+      bottomNavigationBar: const ReserveNavbar(active: NavItem.goals),
       body: Column(
         children: [
-          const ReserveNavbar(active: NavItem.goals),
           Expanded(
             child: SafeArea(
         child: Center(

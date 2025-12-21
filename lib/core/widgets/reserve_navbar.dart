@@ -7,6 +7,7 @@ import '../routes/app_routes.dart';
 import 'package:reserve_mobile/features/blog/screens/blog_list_screen.dart';
 
 
+
 enum NavItem { home, classes, history, blog, goals, profile }
 
 class ReserveNavbar extends StatelessWidget {
@@ -66,7 +67,7 @@ class ReserveNavbar extends StatelessWidget {
               label: "Goals",
               icon: Icons.timer_outlined,
               isActive: active == NavItem.goals,
-              onTap: () => _goTo(context, const PersonalGoalsPlaceholder()),
+              onTap: () => Navigator.pushReplacementNamed(context, AppRoutes.personalGoals),
             ),
             _navItem(
               context,
