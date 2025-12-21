@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:reserve_mobile/core/widgets/reserve_navbar.dart';
 import 'package:reserve_mobile/home_search/models/fitness_class.dart';
 import 'package:reserve_mobile/home_search/services/classes_service.dart';
 import 'package:reserve_mobile/core/utils/image_utils.dart';
+import 'package:reserve_mobile/features/reviews/widgets/class_reviews_section.dart';
+import 'package:reserve_mobile/core/auth/auth_provider.dart';
 
 class ClassDetailPage extends StatelessWidget {
-  final FitnessClass fitnessClass; // passed from list (may be partial)
+  final FitnessClass fitnessClass;
 
   const ClassDetailPage({super.key, required this.fitnessClass});
 
@@ -13,7 +16,6 @@ class ClassDetailPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final id = fitnessClass.id;
     if (id == null) {
-      // fallback if somehow no id
       return Scaffold(
         backgroundColor: const Color(0xFFFDF3EE),
         bottomNavigationBar: const ReserveNavbar(active: NavItem.classes),
@@ -29,48 +31,40 @@ class ClassDetailPage extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: const Color(0xFFFDF3EE),
-      bottomNavigationBar: const ReserveNavbar(active: NavItem.classes),
-      body: Column(
-        children: [
-          Expanded(
-            child: FutureBuilder<FitnessClass>(
-              future: ClassesService.fetchById(context, id),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-                if (snapshot.hasError) {
-                  return Center(
-                    child: Padding(
-                      padding: const EdgeInsets.all(24),
-                      child: Text(
-                        "Error loading class detail: ${snapshot.error}",
-                        style: const TextStyle(color: Colors.red),
-                      ),
-                    ),
-                  );
-                }
+      body: FutureBuilder<FitnessClass>(
+        future: ClassesService.fetchById(context, id),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          if (snapshot.hasError) {
+            return Center(
+              child: Padding(
+                padding: const EdgeInsets.all(24),
+                child: Text(
+                  "Error loading class detail: ${snapshot.error}",
+                  style: const TextStyle(color: Colors.red),
+                ),
+              ),
+            );
+          }
 
-                final c = snapshot.data ?? fitnessClass;
+          final c = snapshot.data ?? fitnessClass;
 
-                return SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _heroImage(c),
-                      _content(context, c),
-                    ],
-                  ),
-                );
-              },
+          return SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _heroImage(c),
+                _content(context, c),
+              ],
             ),
-          ),
-        ],
+          );
+        },
       ),
     );
   }
 
-  // ================= HERO IMAGE =================
   Widget _heroImage(FitnessClass c) {
     final url = c.imageUrl.trim();
 
@@ -79,11 +73,10 @@ class ClassDetailPage extends StatelessWidget {
       height: 380,
       child: url.isNotEmpty
           ? Image.network(
-  corsFix(url),
-  fit: BoxFit.cover,
-  errorBuilder: (_, __, ___) => _fallbackHero(),
-)
-
+        corsFix(url),
+        fit: BoxFit.cover,
+        errorBuilder: (_, __, ___) => _fallbackHero(),
+      )
           : _fallbackHero(),
     );
   }
@@ -97,13 +90,12 @@ class ClassDetailPage extends StatelessWidget {
     );
   }
 
-  // ================= CONTENT =================
   Widget _content(BuildContext context, FitnessClass c) {
     final dt = c.datetime;
     final dateText = (dt == null) ? "-" : _formatDateTime(dt);
 
     final ownerText =
-        (c.owner == null || c.owner!.trim().isEmpty) ? "-" : c.owner!.trim();
+    (c.owner == null || c.owner!.trim().isEmpty) ? "-" : c.owner!.trim();
 
     final locText = c.location.trim().isEmpty ? "-" : c.location.trim();
     final descText = c.description.trim().isEmpty ? "-" : c.description.trim();
@@ -174,6 +166,19 @@ class ClassDetailPage extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 40),
+
+          // ================= REVIEWS SECTION =================
+          Consumer<AuthProvider>(
+            builder: (context, auth, child) {
+              final isLoggedIn = auth.isLoggedIn;
+              final isMember = isLoggedIn ? auth.isMember : false;
+
+              return ClassReviewsSection(
+                classId: c.id!,
+                isMember: isMember, // No sessionCookie needed!
+              );
+            },
+          ),
         ],
       ),
     );
