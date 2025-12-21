@@ -145,11 +145,15 @@ class _ProfilePageState extends State<ProfilePage> {
                 children: [
                   _InfoRow(
                     label: 'Height',
-                    value: profile.heightCm == null ? '-' : '${profile.heightCm} cm',
+                    value: profile.heightCm == null
+                        ? '-'
+                        : '${profile.heightCm} cm',
                   ),
                   _InfoRow(
                     label: 'Weight',
-                    value: profile.weightKg == null ? '-' : '${profile.weightKg} kg',
+                    value: profile.weightKg == null
+                        ? '-'
+                        : '${profile.weightKg} kg',
                   ),
                 ],
               ),
@@ -157,7 +161,10 @@ class _ProfilePageState extends State<ProfilePage> {
               _InfoCard(
                 title: 'Activity',
                 children: [
-                  _InfoRow(label: 'Last login', value: _formatLastLogin(profile.lastLoginIso)),
+                  _InfoRow(
+                    label: 'Last login',
+                    value: _formatLastLogin(profile.lastLoginIso),
+                  ),
                 ],
               ),
               const SizedBox(height: 16),
@@ -182,6 +189,17 @@ class _ProfilePageState extends State<ProfilePage> {
                   },
                   icon: const Icon(Icons.edit),
                   label: const Text('Edit Profile'),
+                ),
+              ),
+              const SizedBox(height: 12),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton.icon(
+                  onPressed: () {
+                    Navigator.pushNamed(context, AppRoutes.blog);
+                  },
+                  icon: const Icon(Icons.article),
+                  label: const Text('View Blog'),
                 ),
               ),
             ],
@@ -250,8 +268,12 @@ class _RoleBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    final bg = isInstructor ? theme.colorScheme.primaryContainer : theme.colorScheme.secondaryContainer;
-    final fg = isInstructor ? theme.colorScheme.onPrimaryContainer : theme.colorScheme.onSecondaryContainer;
+    final bg = isInstructor
+        ? theme.colorScheme.primaryContainer
+        : theme.colorScheme.secondaryContainer;
+    final fg = isInstructor
+        ? theme.colorScheme.onPrimaryContainer
+        : theme.colorScheme.onSecondaryContainer;
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
@@ -259,7 +281,10 @@ class _RoleBadge extends StatelessWidget {
         color: bg,
         borderRadius: BorderRadius.circular(999),
       ),
-      child: Text(label, style: theme.textTheme.labelLarge?.copyWith(color: fg)),
+      child: Text(
+        label,
+        style: theme.textTheme.labelLarge?.copyWith(color: fg),
+      ),
     );
   }
 }
@@ -309,13 +334,13 @@ class _InfoRow extends StatelessWidget {
             width: 110,
             child: Text(
               label,
-              style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
+              style: theme.textTheme.bodyMedium?.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ),
           const SizedBox(width: 12),
-          Expanded(
-            child: Text(value, style: theme.textTheme.bodyMedium),
-          ),
+          Expanded(child: Text(value, style: theme.textTheme.bodyMedium)),
         ],
       ),
     );
