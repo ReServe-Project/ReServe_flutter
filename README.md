@@ -88,3 +88,4 @@ On the Django side, dedicated endpoints are provided to receive GET and POST req
 VI. Links
 
 Figma Link: https://www.figma.com/team_invite/redeem/ofrpzmgVMDOn9n8CVpSdHt
+Video Link: https://drive.google.com/drive/folders/1FxJMmcKLOZV6QKCvw-tCMFFc5mwgToq4?usp=sharing
