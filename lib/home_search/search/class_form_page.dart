@@ -162,9 +162,9 @@ class _ClassFormPageState extends State<ClassFormPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFFDF3EE),
+      bottomNavigationBar: const ReserveNavbar(active: NavItem.classes),
       body: Column(
         children: [
-          const ReserveNavbar(active: NavItem.classes),
           Expanded(
             child: SingleChildScrollView(
               child: Padding(

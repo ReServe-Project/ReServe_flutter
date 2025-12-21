@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:reserve_mobile/home_search/search/classes_search_page.dart';
 import 'package:reserve_mobile/core/widgets/reserve_navbar.dart';
-import 'package:reserve_mobile/core/widgets/reserve_drawer.dart'; // ✅ ADD THIS
+
 
 class LandingScreen extends StatefulWidget {
   const LandingScreen({super.key});
@@ -21,28 +21,15 @@ class LandingScreen extends StatefulWidget {
 }
 
 class _LandingScreenState extends State<LandingScreen> {
-  // ✅ ADD THIS (for opening drawer on web)
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-
-  // ✅ ADD THIS (auto-open drawer once)
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _scaffoldKey.currentState?.openDrawer();
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: _scaffoldKey, // ✅ ADD THIS
-      drawer: const ReserveDrawer(), // ✅ ADD THIS
       backgroundColor: const Color(0xFFFDF3EE),
+      bottomNavigationBar: const ReserveNavbar(active: NavItem.home),
       body: SingleChildScrollView(
         child: Column(
           children: [
-            const ReserveNavbar(active: NavItem.home),
             _heroSection(context),
             _aboutSection(),
             _classesSection(context),
