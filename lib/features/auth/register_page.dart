@@ -161,6 +161,19 @@ class _RegisterPageState extends State<RegisterPage> {
                               : const Text('Register'),
                         ),
                       ),
+                      const SizedBox(height: 12),
+
+                      TextButton(
+                        onPressed: _isLoading
+                            ? null
+                            : () {
+                                Navigator.pop(context);
+                              },
+                        child: const Text(
+                          'Already have an account? Log in',
+                          style: TextStyle(fontSize: 14),
+                        ),
+                      ),
                     ],
                   ),
                 ),
