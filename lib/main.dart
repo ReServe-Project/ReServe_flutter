@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'core/auth/auth_provider.dart';
 import 'core/routes/app_router.dart';
 import 'core/theme/app_theme.dart';
+import 'checkout/booking_history_page.dart';
 
 void main() {
   runApp(
