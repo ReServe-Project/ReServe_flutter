@@ -3,12 +3,11 @@ import 'package:provider/provider.dart';
 
 import '../../core/auth/auth_provider.dart';
 import '../../core/widgets/reserve_navbar.dart';
+import '../../core/widgets/reserve_drawer.dart';
 import '../../features/profile/services/profile_api.dart';
 import '../../features/profile/models/user_profile.dart';
 import '../models/PersonalGoal.dart';
 import '../services/personal_goal_api.dart';
-import 'package:reserve_mobile/core/widgets/reserve_navbar.dart';
-
 
 class PersonalGoalsPage extends StatefulWidget {
   const PersonalGoalsPage({super.key});
@@ -301,7 +300,7 @@ class _PersonalGoalsPageState extends State<PersonalGoalsPage> {
     } catch (e) {
       // Revert optimistic update on error by reloading
       await _loadGoalsForSelectedDate();
-      _showSnack('Failed to add goal: $e');
+      
     }
   }
 
@@ -330,7 +329,7 @@ class _PersonalGoalsPageState extends State<PersonalGoalsPage> {
         // If we're showing month list, just reload calendar and rebuild list
         await _loadCalendar(year: _year, month: _month, keepGoalsList: false);
       }
-      _showSnack('Failed to toggle goal: $e');
+      
     }
   }
 
@@ -344,9 +343,10 @@ class _PersonalGoalsPageState extends State<PersonalGoalsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: _bg,
-      bottomNavigationBar: const ReserveNavbar(active: NavItem.goals),
+      drawer: const ReserveDrawer(),
       body: Column(
         children: [
+          const ReserveNavbar(active: NavItem.goals),
           Expanded(
             child: SafeArea(
         child: Center(
@@ -356,21 +356,8 @@ class _PersonalGoalsPageState extends State<PersonalGoalsPage> {
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
               child: LayoutBuilder(
                 builder: (context, c) {
-                  final isWide = c.maxWidth >= 900;
-
                   final left = _buildLeftCalendar();
                   final right = _buildRightGoalsPanel();
-
-                  if (isWide) {
-                    return Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(width: 460, child: left),
-                        const SizedBox(width: 28),
-                        Expanded(child: right),
-                      ],
-                    );
-                  }
 
                   return ListView(
                     children: [
@@ -394,10 +381,10 @@ class _PersonalGoalsPageState extends State<PersonalGoalsPage> {
 
   Widget _buildLeftCalendar() {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Container(
-          width: 436,
+          width: 700,
           padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
           decoration: BoxDecoration(
             color: _orange,
@@ -413,7 +400,7 @@ class _PersonalGoalsPageState extends State<PersonalGoalsPage> {
         ),
         const SizedBox(height: 14),
         Container(
-          width: 436,
+          width: 700,
           height: 439,
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
