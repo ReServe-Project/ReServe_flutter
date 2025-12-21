@@ -78,10 +78,7 @@ class _ClassReviewsSectionState extends State<ClassReviewsSection> {
           ),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
-            child: const Text(
-              'Delete',
-              style: TextStyle(color: Colors.red),
-            ),
+            child: const Text('Delete', style: TextStyle(color: Colors.red)),
           ),
         ],
       ),
@@ -116,9 +113,7 @@ class _ClassReviewsSectionState extends State<ClassReviewsSection> {
 
   double get averageRating {
     if (_reviews.isEmpty) return 0;
-  return _reviews
-    .map((r) => r.rating)
-        .reduce((a, b) => a + b) /
+    return _reviews.map((r) => r.rating).reduce((a, b) => a + b) /
         _reviews.length;
   }
 
@@ -130,9 +125,7 @@ class _ClassReviewsSectionState extends State<ClassReviewsSection> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(24),
-        boxShadow: const [
-          BoxShadow(color: Colors.black12, blurRadius: 10),
-        ],
+        boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 10)],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -143,8 +136,10 @@ class _ClassReviewsSectionState extends State<ClassReviewsSection> {
             children: [
               Text(
                 'Reviews (${_reviews.length})',
-                style:
-                const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               if (widget.isMember)
                 ElevatedButton(
@@ -170,9 +165,7 @@ class _ClassReviewsSectionState extends State<ClassReviewsSection> {
                 Row(
                   children: List.generate(3, (i) {
                     return Icon(
-                      i + 1 <= averageRating
-                          ? Icons.star
-                          : Icons.star_border,
+                      i + 1 <= averageRating ? Icons.star : Icons.star_border,
                       color: Colors.amber,
                     );
                   }),
@@ -224,18 +217,15 @@ class _ClassReviewsSectionState extends State<ClassReviewsSection> {
                             await _loadReviews();
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
-                                content:
-                                Text('Review submitted successfully'),
+                                content: Text('Review submitted successfully'),
                                 backgroundColor: Colors.green,
                               ),
                             );
                           } catch (e) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
-                                content:
-                                Text('Failed to submit review: $e'),
-                                duration:
-                                const Duration(seconds: 3),
+                                content: Text('Failed to submit review: $e'),
+                                duration: const Duration(seconds: 3),
                               ),
                             );
                           }
@@ -280,7 +270,7 @@ class _ClassReviewsSectionState extends State<ClassReviewsSection> {
             )
           else
             ..._reviews.map(
-                  (r) => Container(
+              (r) => Container(
                 margin: const EdgeInsets.only(bottom: 12),
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
@@ -292,28 +282,22 @@ class _ClassReviewsSectionState extends State<ClassReviewsSection> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
-                      mainAxisAlignment:
-                      MainAxisAlignment.spaceBetween,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
                           r.username,
-                          style: const TextStyle(
-                              fontWeight: FontWeight.bold),
+                          style: const TextStyle(fontWeight: FontWeight.bold),
                         ),
-            if (context
-              .read<AuthProvider>()
-              .isLoggedIn &&
-              context
-                .read<AuthProvider>()
-                .username ==
-                r.username)
+                        if (context.read<AuthProvider>().isLoggedIn &&
+                            context.read<AuthProvider>().username == r.username)
                           Container(
                             padding: const EdgeInsets.symmetric(
-                                horizontal: 8, vertical: 4),
+                              horizontal: 8,
+                              vertical: 4,
+                            ),
                             decoration: BoxDecoration(
                               color: Colors.blue.shade100,
-                              borderRadius:
-                              BorderRadius.circular(12),
+                              borderRadius: BorderRadius.circular(12),
                             ),
                             child: const Text(
                               'Your Review',
@@ -327,13 +311,13 @@ class _ClassReviewsSectionState extends State<ClassReviewsSection> {
                       ],
                     ),
                     Row(
-                        children: List.generate(3, (i) {
-                          return Icon(
-                            i + 1 <= r.rating ? Icons.star : Icons.star_border,
-                            color: Colors.amber,
-                            size: 16,
-                          );
-                        }),
+                      children: List.generate(3, (i) {
+                        return Icon(
+                          i + 1 <= r.rating ? Icons.star : Icons.star_border,
+                          color: Colors.amber,
+                          size: 16,
+                        );
+                      }),
                     ),
                     const SizedBox(height: 6),
                     Text(r.comment),

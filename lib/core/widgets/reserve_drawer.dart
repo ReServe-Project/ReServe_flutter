@@ -28,22 +28,28 @@ class ReserveDrawer extends StatelessWidget {
             ListTile(
               leading: const Icon(Icons.home_rounded),
               title: const Text('Home'),
-              onTap: () => Navigator.pushReplacementNamed(context, AppRoutes.home),
+              onTap: () =>
+                  Navigator.pushReplacementNamed(context, AppRoutes.home),
             ),
             ListTile(
               leading: const Icon(Icons.fitness_center_rounded),
               title: const Text('Classes'),
-              onTap: () => Navigator.pushReplacementNamed(context, AppRoutes.classes),
+              onTap: () =>
+                  Navigator.pushReplacementNamed(context, AppRoutes.classes),
             ),
             ListTile(
               leading: const Icon(Icons.image_outlined),
               title: const Text('Blog'),
-              onTap: () => Navigator.pushReplacementNamed(context, AppRoutes.blog),
+              onTap: () =>
+                  Navigator.pushReplacementNamed(context, AppRoutes.blog),
             ),
             ListTile(
               leading: const Icon(Icons.timer_outlined),
               title: const Text('Personal Goals'),
-              onTap: () => Navigator.pushReplacementNamed(context, AppRoutes.personalGoals),
+              onTap: () => Navigator.pushReplacementNamed(
+                context,
+                AppRoutes.personalGoals,
+              ),
             ),
             const Spacer(),
             Divider(height: 1, color: Colors.grey.shade300),
@@ -53,14 +59,19 @@ class ReserveDrawer extends StatelessWidget {
                     title: const Text('Logout'),
                     onTap: () async {
                       // perform logout then go to splash/login
-                      await context.read<AuthProvider>().logout(baseUrl: AppConfig.baseUrl);
+                      await context.read<AuthProvider>().logout(
+                        baseUrl: AppConfig.baseUrl,
+                      );
                       Navigator.pushReplacementNamed(context, AppRoutes.splash);
                     },
                   )
                 : ListTile(
                     leading: const Icon(Icons.login),
                     title: const Text('Login'),
-                    onTap: () => Navigator.pushReplacementNamed(context, AppRoutes.login),
+                    onTap: () => Navigator.pushReplacementNamed(
+                      context,
+                      AppRoutes.login,
+                    ),
                   ),
             const SizedBox(height: 12),
           ],

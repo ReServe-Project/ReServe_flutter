@@ -1,5 +1,10 @@
 # ReServe_flutter
 
+[![Build Status]([![Build Status](https://app.bitrise.io/app/7f0ff9e5-3e84-4678-91d2-9111d57f15a3/status.svg?token=wjfIpL7ZKuPZr2AlXsx_YQ&branch=main)](https://app.bitrise.io/app/7f0ff9e5-3e84-4678-91d2-9111d57f15a3))
+
+## Download
+Download the latest version of the application: [Download APK](https://app.bitrise.io/app/7f0ff9e5-3e84-4678-91d2-9111d57f15a3/installable-artifacts/8738a3bdf3db0a59/public-install-page/f3735951f2ed85787835111925d4bfda)
+
 I. Group member names
 | Name | NPM |
 |:---:|:---:|

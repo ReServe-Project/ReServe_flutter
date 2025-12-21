@@ -10,16 +10,22 @@ class ReviewService {
   static String get _base => AppConfig.baseUrl;
 
   // URL helpers
-  static String _reviewsJsonUrl(int classId) => '$_base/classes/$classId/reviews/json/';
-  static String _addReviewUrl(int classId) => '$_base/classes/$classId/add_review/';
-  static String _deleteReviewUrl(int classId, int reviewId) => '$_base/classes/$classId/delete_review/$reviewId/';
+  static String _reviewsJsonUrl(int classId) =>
+      '$_base/classes/$classId/reviews/json/';
+  static String _addReviewUrl(int classId) =>
+      '$_base/classes/$classId/add_review/';
+  static String _deleteReviewUrl(int classId, int reviewId) =>
+      '$_base/classes/$classId/delete_review/$reviewId/';
 
   // Get the CookieRequest from AuthProvider
   static CookieRequest _req(BuildContext context) {
     return context.read<AuthProvider>().request;
   }
 
-  static Future<List<Review>> fetchReviews(BuildContext context, int classId) async {
+  static Future<List<Review>> fetchReviews(
+    BuildContext context,
+    int classId,
+  ) async {
     final request = _req(context);
     final url = _reviewsJsonUrl(classId);
 
@@ -29,7 +35,9 @@ class ReviewService {
       throw Exception("Failed to load reviews");
     }
 
-    return res.map((e) => Review.fromJson(Map<String, dynamic>.from(e))).toList();
+    return res
+        .map((e) => Review.fromJson(Map<String, dynamic>.from(e)))
+        .toList();
   }
 
   static Future<Map<String, dynamic>> submitReview({
@@ -43,13 +51,10 @@ class ReviewService {
 
     // For Django with pbp_django_auth, we need to send as form data
     // but add JSON content-type header
-    final res = await request.post(
-      url,
-      {
-        'rating': rating.toString(),
-        'comment': comment,
-      },
-    );
+    final res = await request.post(url, {
+      'rating': rating.toString(),
+      'comment': comment,
+    });
 
     // Try to parse response
     if (res is Map<String, dynamic>) {
@@ -98,7 +103,8 @@ class ReviewService {
 
     // If it's HTML (from web), check for errors
     if (res is String) {
-      if (res.toLowerCase().contains('error') || res.toLowerCase().contains('forbidden')) {
+      if (res.toLowerCase().contains('error') ||
+          res.toLowerCase().contains('forbidden')) {
         throw Exception('Failed to delete review');
       }
       return; // Assume success if no error

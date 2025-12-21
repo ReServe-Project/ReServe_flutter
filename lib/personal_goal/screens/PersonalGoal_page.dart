@@ -69,7 +69,11 @@ class _PersonalGoalsPageState extends State<PersonalGoalsPage> {
     });
 
     try {
-      final cal = await PersonalGoalsApi.fetchCalendar(auth.request, year, month);
+      final cal = await PersonalGoalsApi.fetchCalendar(
+        auth.request,
+        year,
+        month,
+      );
 
       setState(() {
         _year = cal.year;
@@ -193,7 +197,9 @@ class _PersonalGoalsPageState extends State<PersonalGoalsPage> {
       barrierDismissible: true,
       builder: (context) {
         return Dialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
           child: Padding(
             padding: const EdgeInsets.all(18),
             child: Column(
@@ -202,14 +208,22 @@ class _PersonalGoalsPageState extends State<PersonalGoalsPage> {
                 const SizedBox(height: 4),
                 const Text(
                   'Add New Goal',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: Color(0xFF2E2B41)),
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w700,
+                    color: Color(0xFF2E2B41),
+                  ),
                 ),
                 const SizedBox(height: 16),
                 const Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
                     'Goal Name',
-                    style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Color(0xFF2E2B41)),
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                      color: Color(0xFF2E2B41),
+                    ),
                   ),
                 ),
                 const SizedBox(height: 8),
@@ -236,7 +250,9 @@ class _PersonalGoalsPageState extends State<PersonalGoalsPage> {
                         foregroundColor: const Color(0xFFA44311),
                         backgroundColor: const Color(0xFFFFEDE3),
                         side: const BorderSide(color: _orange),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
                       ),
                       onPressed: () => Navigator.pop(context, null),
                       child: const Text('Cancel'),
@@ -246,7 +262,9 @@ class _PersonalGoalsPageState extends State<PersonalGoalsPage> {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: _orange,
                         foregroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
                       ),
                       onPressed: () {
                         final title = controller.text.trim();
@@ -273,7 +291,7 @@ class _PersonalGoalsPageState extends State<PersonalGoalsPage> {
     try {
       // Parse the date to get a temporary ID and create the goal object
       final goalDate = DateTime.parse(dateStr);
-      
+
       // Optimistic UI: add the goal immediately with a temporary ID
       final tempGoal = PersonalGoal(
         id: -DateTime.now().millisecondsSinceEpoch, // negative temp ID
@@ -290,17 +308,20 @@ class _PersonalGoalsPageState extends State<PersonalGoalsPage> {
       });
 
       // Send to server
-      await PersonalGoalsApi.addGoal(auth.request, title: title, dateStr: dateStr);
+      await PersonalGoalsApi.addGoal(
+        auth.request,
+        title: title,
+        dateStr: dateStr,
+      );
 
       // Refresh to get the real goal ID and ensure consistency
       await _loadCalendar(year: _year, month: _month, keepGoalsList: true);
       await _loadGoalsForSelectedDate();
-      
+
       _showSnack('Goal added successfully!');
     } catch (e) {
       // Revert optimistic update on error by reloading
       await _loadGoalsForSelectedDate();
-      
     }
   }
 
@@ -310,7 +331,10 @@ class _PersonalGoalsPageState extends State<PersonalGoalsPage> {
     // Optimistic UI
     setState(() {
       _visibleGoals = _visibleGoals
-          .map((g) => g.id == goal.id ? g.copyWith(isCompleted: !g.isCompleted) : g)
+          .map(
+            (g) =>
+                g.id == goal.id ? g.copyWith(isCompleted: !g.isCompleted) : g,
+          )
           .toList();
     });
 
@@ -329,14 +353,11 @@ class _PersonalGoalsPageState extends State<PersonalGoalsPage> {
         // If we're showing month list, just reload calendar and rebuild list
         await _loadCalendar(year: _year, month: _month, keepGoalsList: false);
       }
-      
     }
   }
 
   void _showSnack(String msg) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(msg)),
-    );
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
   }
 
   @override
@@ -344,11 +365,7 @@ class _PersonalGoalsPageState extends State<PersonalGoalsPage> {
     return Scaffold(
       backgroundColor: _bg,
       drawer: const ReserveDrawer(),
-      body: Column(
-        children: [
-          const ReserveNavbar(active: NavItem.goals),
-          Expanded(
-            child: SafeArea(
+      body: SafeArea(
         child: Center(
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 1200),
@@ -372,10 +389,8 @@ class _PersonalGoalsPageState extends State<PersonalGoalsPage> {
             ),
           ),
         ),
-            ),
-          ),
-        ],
       ),
+      bottomNavigationBar: const ReserveNavbar(active: NavItem.goals),
     );
   }
 
@@ -389,12 +404,21 @@ class _PersonalGoalsPageState extends State<PersonalGoalsPage> {
           decoration: BoxDecoration(
             color: _orange,
             borderRadius: BorderRadius.circular(12),
-            boxShadow: const [BoxShadow(blurRadius: 6, color: Color(0x22000000), offset: Offset(0, 2))],
+            boxShadow: const [
+              BoxShadow(
+                blurRadius: 6,
+                color: Color(0x22000000),
+                offset: Offset(0, 2),
+              ),
+            ],
           ),
           child: const Center(
             child: Text(
               'Select a date to set your goals!',
-              style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.w700,
+              ),
             ),
           ),
         ),
@@ -508,7 +532,9 @@ class _PersonalGoalsPageState extends State<PersonalGoalsPage> {
                           style: TextStyle(
                             fontSize: 13,
                             fontWeight: FontWeight.w600,
-                            color: selected ? Colors.white : const Color(0xFF2E2B41),
+                            color: selected
+                                ? Colors.white
+                                : const Color(0xFF2E2B41),
                           ),
                         ),
                       ),
@@ -553,17 +579,21 @@ class _PersonalGoalsPageState extends State<PersonalGoalsPage> {
               FutureBuilder<UserProfile>(
                 future: _profileFuture,
                 builder: (context, snap) {
-                  final name = (snap.data?.displayName?.trim().isNotEmpty ?? false)
-                      ? snap.data!.displayName
+                  final displayName = snap.data?.displayName;
+                  final hasDisplay =
+                      displayName != null && displayName.trim().isNotEmpty;
+                  final name = hasDisplay
+                      ? displayName.trim()
                       : (context.read<AuthProvider>().username ?? 'Your');
+
                   return Transform.translate(
                     offset: const Offset(40, 10),
                     child: Text(
-                      "'s Personal Goals",
+                      "${name}'s Personal Goals",
                       style: const TextStyle(
                         fontSize: 30,
-                      fontWeight: FontWeight.w900,
-                      color: Color(0xFF111014),
+                        fontWeight: FontWeight.w900,
+                        color: Color(0xFF111014),
                       ),
                     ),
                   );
@@ -586,15 +616,22 @@ class _PersonalGoalsPageState extends State<PersonalGoalsPage> {
                     Padding(
                       padding: const EdgeInsets.fromLTRB(18, 28, 18, 78),
                       child: _loadingGoals
-                          ? const Center(child: CircularProgressIndicator(color: Colors.white))
+                          ? const Center(
+                              child: CircularProgressIndicator(
+                                color: Colors.white,
+                              ),
+                            )
                           : Align(
                               alignment: Alignment.topCenter,
                               child: ConstrainedBox(
-                                constraints: const BoxConstraints(maxWidth: 742),
+                                constraints: const BoxConstraints(
+                                  maxWidth: 742,
+                                ),
                                 child: Scrollbar(
                                   child: ListView.separated(
                                     itemCount: _visibleGoals.length,
-                                    separatorBuilder: (_, __) => const SizedBox(height: 10),
+                                    separatorBuilder: (_, __) =>
+                                        const SizedBox(height: 10),
                                     itemBuilder: (context, i) {
                                       final g = _visibleGoals[i];
                                       return _GoalTile(
@@ -629,7 +666,9 @@ class _PersonalGoalsPageState extends State<PersonalGoalsPage> {
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: _orange,
                                 foregroundColor: Colors.white,
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(14),
+                                ),
                               ),
                               onPressed: _openAddGoalDialog,
                               icon: const Icon(Icons.add),
@@ -670,7 +709,9 @@ class _GoalTile extends StatelessWidget {
       fontSize: 18,
       fontWeight: FontWeight.w700,
       color: const Color(0xFF2E2B41),
-      decoration: goal.isCompleted ? TextDecoration.lineThrough : TextDecoration.none,
+      decoration: goal.isCompleted
+          ? TextDecoration.lineThrough
+          : TextDecoration.none,
       decorationThickness: 2,
     );
 
@@ -696,7 +737,9 @@ class _GoalTile extends StatelessWidget {
                 child: Text(
                   goal.title,
                   style: titleStyle.copyWith(
-                    color: goal.isCompleted ? const Color(0xFF777777) : const Color(0xFF2E2B41),
+                    color: goal.isCompleted
+                        ? const Color(0xFF777777)
+                        : const Color(0xFF2E2B41),
                   ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
