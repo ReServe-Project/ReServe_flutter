@@ -2,19 +2,26 @@ import 'package:flutter/material.dart';
 import 'package:reserve_mobile/core/widgets/reserve_navbar.dart';
 import 'package:reserve_mobile/home_search/models/fitness_class.dart';
 import 'package:reserve_mobile/home_search/services/classes_service.dart';
+import 'package:reserve_mobile/home_search/widgets/reviews.dart'; // Reviews widget
 import 'package:reserve_mobile/core/utils/image_utils.dart';
 
-
 class ClassDetailPage extends StatelessWidget {
-  final FitnessClass fitnessClass; // passed from list (may be partial)
+  final FitnessClass fitnessClass; // Passed from list (may be partial)
+  final String sessionCookie; // Handmade auth session cookie
+  final String userRole; // Handmade auth user role ('member', 'instructor', etc.)
 
-  const ClassDetailPage({super.key, required this.fitnessClass});
+  const ClassDetailPage({
+    super.key,
+    required this.fitnessClass,
+    required this.sessionCookie,
+    required this.userRole,
+  });
 
   @override
   Widget build(BuildContext context) {
     final id = fitnessClass.id;
     if (id == null) {
-      // fallback if somehow no id
+      // Fallback if somehow no id
       return Scaffold(
         backgroundColor: const Color(0xFFFDF3EE),
         body: Column(
@@ -38,9 +45,11 @@ class ClassDetailPage extends StatelessWidget {
               future: ClassesService.fetchById(context, id),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
+                  // Show loading indicator while fetching
                   return const Center(child: CircularProgressIndicator());
                 }
                 if (snapshot.hasError) {
+                  // Show error if fetching fails
                   return Center(
                     child: Padding(
                       padding: const EdgeInsets.all(24),
@@ -80,11 +89,10 @@ class ClassDetailPage extends StatelessWidget {
       height: 380,
       child: url.isNotEmpty
           ? Image.network(
-  corsFix(url),
-  fit: BoxFit.cover,
-  errorBuilder: (_, __, ___) => _fallbackHero(),
-)
-
+        corsFix(url),
+        fit: BoxFit.cover,
+        errorBuilder: (_, __, ___) => _fallbackHero(),
+      )
           : _fallbackHero(),
     );
   }
@@ -102,10 +110,8 @@ class ClassDetailPage extends StatelessWidget {
   Widget _content(BuildContext context, FitnessClass c) {
     final dt = c.datetime;
     final dateText = (dt == null) ? "-" : _formatDateTime(dt);
-
     final ownerText =
-        (c.owner == null || c.owner!.trim().isEmpty) ? "-" : c.owner!.trim();
-
+    (c.owner == null || c.owner!.trim().isEmpty) ? "-" : c.owner!.trim();
     final locText = c.location.trim().isEmpty ? "-" : c.location.trim();
     final descText = c.description.trim().isEmpty ? "-" : c.description.trim();
 
@@ -114,6 +120,7 @@ class ClassDetailPage extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Class name
           Text(
             c.name,
             style: const TextStyle(
@@ -123,6 +130,8 @@ class ClassDetailPage extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 10),
+
+          // Category label
           Text(
             c.categoryLabel,
             style: const TextStyle(
@@ -132,6 +141,8 @@ class ClassDetailPage extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 16),
+
+          // Price
           Text(
             c.formattedPrice,
             style: const TextStyle(
@@ -141,6 +152,8 @@ class ClassDetailPage extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 26),
+
+          // Info chips: date, location, owner
           Wrap(
             spacing: 18,
             runSpacing: 12,
@@ -151,6 +164,8 @@ class ClassDetailPage extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 30),
+
+          // Description container
           Container(
             width: double.infinity,
             padding: const EdgeInsets.all(28),
@@ -175,11 +190,19 @@ class ClassDetailPage extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 40),
+
+          // ================= REVIEWS SECTION =================
+          ClassReviewsSection(
+            classId: c.id!,
+            sessionCookie: sessionCookie,
+            isMember: userRole == 'member', // Only members can add/update reviews
+          ),
         ],
       ),
     );
   }
 
+  // ================= INFO CHIP =================
   Widget _infoChip(IconData icon, String text) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
@@ -205,6 +228,7 @@ class ClassDetailPage extends StatelessWidget {
     );
   }
 
+  // ================= DATE FORMAT =================
   String _formatDateTime(DateTime dt) {
     const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
     const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -217,3 +241,4 @@ class ClassDetailPage extends StatelessWidget {
     return "$d, ${dt.day} $m ${dt.year} • $hh:$mm";
   }
 }
+
