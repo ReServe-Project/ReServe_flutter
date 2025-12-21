@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/reviews.dart';
-import '../services/review_service.dart';
+import '../services/review_services.dart';
 import 'review_dialog.dart';
 
 /// Embedded reviews section shown inside class detail page
