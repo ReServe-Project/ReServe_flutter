@@ -8,6 +8,10 @@ import '../../features/blog/screens/blog_list_screen.dart';
 import '../../features/blog/screens/create_blog_screen.dart';
 import '../../features/blog/screens/blog_detail_screen.dart';
 
+import '../../home_search/home/landing_screen.dart';
+import '../../home_search/search/classes_search_page.dart';
+import '../widgets/reserve_navbar.dart'; 
+
 class AppRouter {
   static const String initialRoute = AppRoutes.splash;
 
@@ -28,6 +32,10 @@ class AppRouter {
         return MaterialPageRoute(
           builder: (_) => BlogDetailScreen(blogId: blogId ?? ''),
         );
+      case AppRoutes.home:
+        return MaterialPageRoute(builder: (_) => const LandingScreen());
+      case AppRoutes.classes:
+        return MaterialPageRoute(builder: (_) => const ClassesSearchPage());
       default:
         return MaterialPageRoute(
           builder: (_) =>
