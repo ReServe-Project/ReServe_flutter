@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:reserve_mobile/core/widgets/reserve_navbar.dart';
 
 import '../../core/auth/auth_provider.dart';
 import '../../core/config/app_config.dart';
@@ -63,131 +64,145 @@ class _ProfilePageState extends State<ProfilePage> {
     return BackgroundScaffold(
       backgroundAsset: 'assets/images/bg_gym.jpg',
       overlayOpacity: 0.55,
-      appBar: AppBar(
-        title: Row(
-          children: [
-            Image.asset('assets/images/logo_reserve.png', height: 28),
-            const SizedBox(width: 10),
-            const Text('Profile'),
-          ],
-        ),
-        actions: [
-          IconButton(
-            onPressed: _refresh,
-            icon: const Icon(Icons.refresh),
-            tooltip: 'Refresh',
-          ),
-          IconButton(
-            onPressed: _logout,
-            icon: const Icon(Icons.logout),
-            tooltip: 'Logout',
-          ),
+      child: Column(
+        children: [
+          const ReserveNavbar(),
+          Expanded(
+            child: FutureBuilder<UserProfile>(
+              future: _futureProfile,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                }
 
-        ],
-      ),
-      child: FutureBuilder<UserProfile>(
-        future: _futureProfile,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          }
+                if (snapshot.hasError) {
+                  return Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Card(
+                        child: Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Text('Failed to load profile.'),
+                              const SizedBox(height: 12),
+                              Text(snapshot.error.toString()),
+                              const SizedBox(height: 12),
+                              ElevatedButton(
+                                onPressed: _refresh,
+                                child: const Text('Retry'),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                }
 
-          if (snapshot.hasError) {
-            return Center(
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
+                final profile = snapshot.data!;
+                final roleText = _roleLabel(profile.role);
+                final isInstructor = _isInstructor(profile.role);
+
+                return ListView(
+                  padding: const EdgeInsets.all(16),
+                  children: [
+                    _ProfileHeaderCard(
+                      displayName: profile.displayName,
+                      handle: profile.handle,
+                      roleLabel: roleText,
+                      isInstructor: isInstructor,
+                    ),
+                    const SizedBox(height: 16),
+                    _InfoCard(
+                      title: 'Account',
                       children: [
-                        const Text('Failed to load profile.'),
-                        const SizedBox(height: 12),
-                        Text(snapshot.error.toString()),
-                        const SizedBox(height: 12),
-                        ElevatedButton(
-                          onPressed: _refresh,
-                          child: const Text('Retry'),
+                        _InfoRow(label: 'RS ID', value: profile.rsId ?? '-'),
+                        _InfoRow(label: 'Username', value: profile.username),
+                        _InfoRow(label: 'Role', value: roleText),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    _InfoCard(
+                      title: 'Body Metrics',
+                      children: [
+                        _InfoRow(
+                          label: 'Height',
+                          value: profile.heightCm == null
+                              ? '-'
+                              : '${profile.heightCm} cm',
+                        ),
+                        _InfoRow(
+                          label: 'Weight',
+                          value: profile.weightKg == null
+                              ? '-'
+                              : '${profile.weightKg} kg',
                         ),
                       ],
                     ),
-                  ),
-                ),
-              ),
-            );
-          }
+                    const SizedBox(height: 16),
+                    _InfoCard(
+                      title: 'Activity',
+                      children: [
+                        _InfoRow(
+                          label: 'Last login',
+                          value: _formatLastLogin(profile.lastLoginIso),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton.icon(
+                        onPressed: () async {
+                          final updated = await Navigator.push<UserProfile?>(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => EditProfilePage(initial: profile),
+                            ),
+                          );
 
-          final profile = snapshot.data!;
-          final roleText = _roleLabel(profile.role);
-          final isInstructor = _isInstructor(profile.role);
+                          if (!mounted) return;
 
-          return ListView(
-            padding: const EdgeInsets.all(16),
-            children: [
-              _ProfileHeaderCard(
-                displayName: profile.displayName,
-                handle: profile.handle,
-                roleLabel: roleText,
-                isInstructor: isInstructor,
-              ),
-              const SizedBox(height: 16),
-              _InfoCard(
-                title: 'Account',
-                children: [
-                  _InfoRow(label: 'RS ID', value: profile.rsId ?? '-'),
-                  _InfoRow(label: 'Username', value: profile.username),
-                  _InfoRow(label: 'Role', value: roleText),
-                ],
-              ),
-              const SizedBox(height: 16),
-              _InfoCard(
-                title: 'Body Metrics',
-                children: [
-                  _InfoRow(
-                    label: 'Height',
-                    value: profile.heightCm == null ? '-' : '${profile.heightCm} cm',
-                  ),
-                  _InfoRow(
-                    label: 'Weight',
-                    value: profile.weightKg == null ? '-' : '${profile.weightKg} kg',
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-              _InfoCard(
-                title: 'Activity',
-                children: [
-                  _InfoRow(label: 'Last login', value: _formatLastLogin(profile.lastLoginIso)),
-                ],
-              ),
-              const SizedBox(height: 16),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton.icon(
-                  onPressed: () async {
-                    final updated = await Navigator.push<UserProfile?>(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => EditProfilePage(initial: profile),
+                          if (updated != null) {
+                            setState(() {
+                              _futureProfile = Future.value(updated);
+                            });
+                          } else {
+                            _refresh();
+                          }
+                        },
+                        icon: const Icon(Icons.edit),
+                        label: const Text('Edit Profile'),
                       ),
-                    );
-
-                    if (updated != null) {
-                      setState(() {
-                        _futureProfile = Future.value(updated);
-                      });
-                    } else {
-                      _refresh();
-                    }
-                  },
-                  icon: const Icon(Icons.edit),
-                  label: const Text('Edit Profile'),
-                ),
-              ),
-            ],
-          );
-        },
+                    ),
+                    const SizedBox(height: 12),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton.icon(
+                        onPressed: () {
+                          Navigator.pushNamed(context, AppRoutes.blog);
+                        },
+                        icon: const Icon(Icons.article),
+                        label: const Text('View Blog'),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    SizedBox(
+                      width: double.infinity,
+                      child: OutlinedButton.icon(
+                        onPressed: _logout,
+                        icon: const Icon(Icons.logout),
+                        label: const Text('Log out'),
+                      ),
+                    ),
+                  ],
+                );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -251,8 +266,12 @@ class _RoleBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    final bg = isInstructor ? theme.colorScheme.primaryContainer : theme.colorScheme.secondaryContainer;
-    final fg = isInstructor ? theme.colorScheme.onPrimaryContainer : theme.colorScheme.onSecondaryContainer;
+    final bg = isInstructor
+        ? theme.colorScheme.primaryContainer
+        : theme.colorScheme.secondaryContainer;
+    final fg = isInstructor
+        ? theme.colorScheme.onPrimaryContainer
+        : theme.colorScheme.onSecondaryContainer;
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
@@ -260,7 +279,10 @@ class _RoleBadge extends StatelessWidget {
         color: bg,
         borderRadius: BorderRadius.circular(999),
       ),
-      child: Text(label, style: theme.textTheme.labelLarge?.copyWith(color: fg)),
+      child: Text(
+        label,
+        style: theme.textTheme.labelLarge?.copyWith(color: fg),
+      ),
     );
   }
 }
@@ -310,13 +332,13 @@ class _InfoRow extends StatelessWidget {
             width: 110,
             child: Text(
               label,
-              style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
+              style: theme.textTheme.bodyMedium?.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ),
           const SizedBox(width: 12),
-          Expanded(
-            child: Text(value, style: theme.textTheme.bodyMedium),
-          ),
+          Expanded(child: Text(value, style: theme.textTheme.bodyMedium)),
         ],
       ),
     );
