@@ -82,6 +82,7 @@ class _ProfilePageState extends State<ProfilePage> {
             icon: const Icon(Icons.logout),
             tooltip: 'Logout',
           ),
+
         ],
       ),
       child: FutureBuilder<UserProfile>(

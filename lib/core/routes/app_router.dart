@@ -4,6 +4,7 @@ import 'app_routes.dart';
 import '../../features/auth/splash_page.dart';
 import '../../features/auth/login_page.dart';
 import '../../features/profile/profile_page.dart';
+import '../../personal_goal/screens/PersonalGoal_page.dart';
 
 class AppRouter {
   static const String initialRoute = AppRoutes.splash;
@@ -16,6 +17,8 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => const LoginPage());
       case AppRoutes.profile:
         return MaterialPageRoute(builder: (_) => const ProfilePage());
+      case AppRoutes.personalGoals:
+        return MaterialPageRoute(builder: (_) => const PersonalGoalsPage());
       default:
         return MaterialPageRoute(
           builder: (_) => const Scaffold(
