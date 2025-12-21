@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class AppTheme {
   // Universal light theme for the whole app
@@ -12,6 +13,10 @@ class AppTheme {
       inputDecorationTheme: const InputDecorationTheme(
         border: OutlineInputBorder(),
       ),
+
+      // Default font for the app = Inter (subheading/body)
+      textTheme: GoogleFonts.interTextTheme(),
+      primaryTextTheme: GoogleFonts.interTextTheme(),
     );
   }
 }

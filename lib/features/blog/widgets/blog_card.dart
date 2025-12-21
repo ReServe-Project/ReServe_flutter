@@ -1,166 +1,196 @@
 import 'package:flutter/material.dart';
-import '../models/blog_model.dart';
-import '../../../core/utils/django_image_proxy.dart';
+import 'package:google_fonts/google_fonts.dart';
+
+import 'blog_network_image.dart';
 
 class BlogCard extends StatelessWidget {
-  final Blog blog;
+  final dynamic blog;
+  final bool canEdit;
   final VoidCallback onEdit;
   final VoidCallback onDelete;
   final VoidCallback onView;
-  final bool canEdit;
 
   const BlogCard({
     super.key,
     required this.blog,
+    required this.canEdit,
     required this.onEdit,
     required this.onDelete,
     required this.onView,
-    this.canEdit = false,
   });
+
+  String _tryGetTitle() {
+    try {
+      final t = blog.title;
+      if (t is String && t.trim().isNotEmpty) return t;
+    } catch (_) {}
+    return 'Lorem Ipsum Dolor Sit Amet';
+  }
+
+  String? _tryGetImage() {
+    for (final field in ['imageUrl', 'image', 'thumbnailUrl', 'thumbnail']) {
+      try {
+        final v = (blog as dynamic);
+        final val = field == 'imageUrl'
+            ? v.imageUrl
+            : field == 'image'
+                ? v.image
+                : field == 'thumbnailUrl'
+                    ? v.thumbnailUrl
+                    : v.thumbnail;
+        if (val is String && val.trim().isNotEmpty) return val;
+      } catch (_) {}
+    }
+    return null;
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-        side: const BorderSide(color: Color(0xFFE0E0E0), width: 1.5),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Thumbnail
-          Stack(
-            children: [
-              ClipRRect(
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(12),
-                  topRight: Radius.circular(12),
-                ),
-                child: SizedBox(
-                  height: 160,
-                  width: double.infinity,
-                  child: (blog.thumbnail != null && blog.thumbnail!.isNotEmpty)
-                      ? _ProxyableThumbnail(url: blog.thumbnail!)
-                      : Container(
-                          color: Colors.grey[300],
-                          child: Center(
-                            child: Icon(
-                              Icons.image_not_supported,
-                              color: Colors.grey[600],
-                              size: 40,
+    final title = _tryGetTitle();
+    final imageUrl = _tryGetImage();
+
+    return InkWell(
+      borderRadius: BorderRadius.circular(16),
+      onTap: onView,
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: const Color(0xFFE7E2DA)),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Image + overlays
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(8),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(14),
+                  child: Stack(
+                    children: [
+                      Positioned.fill(
+                        child: Container(
+                          color: const Color(0xFFF2F2F2),
+                          child: BlogNetworkImage(
+                            url: imageUrl,
+                            fit: BoxFit.cover,
+                            empty: const Center(
+                              child: Icon(
+                                Icons.image,
+                                color: Color(0xFF9A9A9A),
+                                size: 34,
+                              ),
                             ),
                           ),
                         ),
-                ),
-              ),
-              // Action buttons overlay
-              Positioned(
-                top: 8,
-                right: 8,
-                left: 8,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Container(),
-                    if (canEdit)
-                      Row(
-                        children: [
-                          // Delete button
-                          FloatingActionButton.small(
-                            onPressed: onDelete,
-                            backgroundColor: Colors.red,
+                      ),
+
+                      // Delete / Edit pills (only if canEdit)
+                      if (canEdit) ...[
+                        Positioned(
+                          top: 8,
+                          left: 8,
+                          child: _PillButton(
+                            label: 'Delete',
+                            bg: const Color(0xFFE74C3C),
+                            onTap: onDelete,
+                          ),
+                        ),
+                        Positioned(
+                          top: 8,
+                          right: 8,
+                          child: _PillButton(
+                            label: 'Edit',
+                            bg: const Color(0xFF2D9CDB),
+                            onTap: onEdit,
+                          ),
+                        ),
+                      ],
+
+                      // Arrow button bottom-right
+                      Positioned(
+                        right: 10,
+                        bottom: 10,
+                        child: InkWell(
+                          onTap: onView,
+                          borderRadius: BorderRadius.circular(999),
+                          child: Container(
+                            height: 34,
+                            width: 34,
+                            decoration: const BoxDecoration(
+                              color: Color(0xFF3C416B),
+                              shape: BoxShape.circle,
+                            ),
                             child: const Icon(
-                              Icons.delete,
+                              Icons.north_east,
                               color: Colors.white,
+                              size: 18,
                             ),
                           ),
-                          const SizedBox(width: 8),
-                          // Edit button
-                          FloatingActionButton.small(
-                            onPressed: onEdit,
-                            backgroundColor: Colors.blue,
-                            child: const Icon(Icons.edit, color: Colors.white),
-                          ),
-                        ],
-                      )
-                    else
-                      const SizedBox.shrink(),
-                  ],
-                ),
-              ),
-              // View button overlay (bottom right)
-              Positioned(
-                bottom: 8,
-                right: 8,
-                child: FloatingActionButton.small(
-                  onPressed: onView,
-                  backgroundColor: const Color(0xFF2D3E50),
-                  child: const Icon(Icons.arrow_forward, color: Colors.white),
-                ),
-              ),
-            ],
-          ),
-          // Content
-          Padding(
-            padding: const EdgeInsets.all(12),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  blog.title,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: Color(0xFF5C3D2E),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                const SizedBox(height: 8),
-                Text(
-                  blog.content,
-                  maxLines: 3,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(fontSize: 12, color: Colors.grey),
-                ),
-              ],
+              ),
             ),
-          ),
-        ],
+
+            // Title
+            Padding(
+              padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
+              child: Text(
+                title,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: GoogleFonts.inter( 
+                  fontSize: 18,
+                  fontWeight: FontWeight.w700,
+                  color: const Color(0xFFA44E22),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 }
 
-class _ProxyableThumbnail extends StatelessWidget {
-  final String url;
+class _PillButton extends StatelessWidget {
+  final String label;
+  final Color bg;
+  final VoidCallback onTap;
 
-  const _ProxyableThumbnail({required this.url});
+  const _PillButton({
+    required this.label,
+    required this.bg,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Image.network(
-      url,
-      fit: BoxFit.cover,
-      errorBuilder: (context, error, stackTrace) {
-        return Image.network(
-          DjangoImageProxy.proxyUrl(url),
-          fit: BoxFit.cover,
-          errorBuilder: (context, error, stackTrace) {
-            return Container(
-              color: Colors.grey[300],
-              child: Center(
-                child: Icon(
-                  Icons.image_not_supported,
-                  color: Colors.grey[600],
-                  size: 40,
-                ),
-              ),
-            );
-          },
-        );
-      },
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(999),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+          decoration: BoxDecoration(
+            color: bg,
+            borderRadius: BorderRadius.circular(999),
+          ),
+          child: Text(
+            label,
+            style: GoogleFonts.inter( // heading (bold)
+              color: Colors.white,
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
