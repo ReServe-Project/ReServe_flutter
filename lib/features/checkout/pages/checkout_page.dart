@@ -24,6 +24,14 @@ class _CheckoutPageState extends State<CheckoutPage> {
 
   bool submitting = false;
 
+  // 🎨 COLOR PALETTE (same as history/blog)
+  static const Color bgCream = Color(0xFFFFF7ED);
+  static const Color cardWhite = Colors.white;
+  static const Color primaryOrange = Color(0xFFF97316);
+  static const Color primaryIndigo = Color(0xFF3F3D6B);
+  static const Color borderGray = Color(0xFFE5E7EB);
+  static const Color mutedGray = Color(0xFF6B7280);
+
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
 
@@ -51,7 +59,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF9FAFB),
+      backgroundColor: bgCream,
       body: SafeArea(
         child: Center(
           child: ConstrainedBox(
@@ -68,9 +76,9 @@ class _CheckoutPageState extends State<CheckoutPage> {
                         onPressed: () => Navigator.pop(context),
                         icon: const Icon(Icons.arrow_back),
                         style: IconButton.styleFrom(
-                          backgroundColor: Colors.white,
+                          backgroundColor: cardWhite,
                           shape: const CircleBorder(),
-                          side: const BorderSide(color: Color(0xFFE0E0E0)),
+                          side: const BorderSide(color: borderGray),
                         ),
                       ),
                       const SizedBox(width: 16),
@@ -78,8 +86,8 @@ class _CheckoutPageState extends State<CheckoutPage> {
                         "Checkout",
                         style: TextStyle(
                           fontSize: 36,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFF4C4974),
+                          fontWeight: FontWeight.w800,
+                          color: primaryIndigo,
                         ),
                       ),
                     ],
@@ -104,8 +112,9 @@ class _CheckoutPageState extends State<CheckoutPage> {
                           ),
 
                           SizedBox(
-                              width: isMobile ? 0 : 24,
-                              height: isMobile ? 24 : 0),
+                            width: isMobile ? 0 : 24,
+                            height: isMobile ? 24 : 0,
+                          ),
 
                           /// RIGHT — PAYMENT
                           Expanded(
@@ -130,9 +139,9 @@ class _CheckoutPageState extends State<CheckoutPage> {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFE0E0E0)),
+        color: cardWhite,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: borderGray),
         boxShadow: const [
           BoxShadow(
             color: Colors.black12,
@@ -150,7 +159,8 @@ class _CheckoutPageState extends State<CheckoutPage> {
               widget.className,
               style: const TextStyle(
                 fontSize: 22,
-                fontWeight: FontWeight.bold,
+                fontWeight: FontWeight.w700,
+                color: primaryOrange,
               ),
             ),
 
@@ -196,7 +206,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
             style: const TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w500,
-              color: Colors.grey,
+              color: mutedGray,
             ),
           ),
           const SizedBox(height: 8),
@@ -204,10 +214,12 @@ class _CheckoutPageState extends State<CheckoutPage> {
             controller: controller,
             validator: validator,
             decoration: InputDecoration(
-              contentPadding:
-              const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 12,
+                vertical: 10,
+              ),
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(10),
               ),
             ),
           ),
@@ -220,9 +232,9 @@ class _CheckoutPageState extends State<CheckoutPage> {
   Widget _paymentCard() {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFE0E0E0)),
+        color: cardWhite,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: borderGray),
         boxShadow: const [
           BoxShadow(
             color: Colors.black12,
@@ -238,9 +250,9 @@ class _CheckoutPageState extends State<CheckoutPage> {
             width: double.infinity,
             padding: const EdgeInsets.all(16),
             decoration: const BoxDecoration(
-              color: Color(0xFF4C4974),
+              color: primaryIndigo,
               borderRadius: BorderRadius.vertical(
-                top: Radius.circular(12),
+                top: Radius.circular(14),
               ),
             ),
             child: const Text(
@@ -272,10 +284,11 @@ class _CheckoutPageState extends State<CheckoutPage> {
               child: ElevatedButton(
                 onPressed: submitting ? null : _submit,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFFF97316),
+                  backgroundColor: primaryOrange,
+                  foregroundColor: Colors.white,
                   padding: const EdgeInsets.symmetric(vertical: 14),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(10),
                   ),
                 ),
                 child: submitting

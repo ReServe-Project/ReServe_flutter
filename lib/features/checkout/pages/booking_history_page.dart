@@ -6,6 +6,7 @@ import 'edit_booking_page.dart';
 
 import 'package:reserve_mobile/core/widgets/reserve_navbar.dart';
 import 'package:reserve_mobile/core/config/app_config.dart';
+import 'package:reserve_mobile/core/routes/app_routes.dart';
 
 import 'package:reserve_mobile/home_search/models/fitness_class.dart';
 import 'package:reserve_mobile/home_search/services/classes_service.dart';
@@ -20,6 +21,14 @@ class BookingHistoryPage extends StatefulWidget {
 class _BookingHistoryPageState extends State<BookingHistoryPage> {
   late Future<List<Booking>> _future;
   final Map<int, FitnessClass> _classCache = {};
+
+  // 🎨 COLOR PALETTE (matches blog page)
+  static const Color bgCream = Color(0xFFFFF7ED);
+  static const Color cardWhite = Colors.white;
+  static const Color primaryOrange = Color(0xFFF97316);
+  static const Color primaryIndigo = Color(0xFF3F3D6B);
+  static const Color mutedGray = Color(0xFF6B7280);
+  static const Color borderGray = Color(0xFFE5E7EB);
 
   @override
   void initState() {
@@ -55,8 +64,12 @@ class _BookingHistoryPageState extends State<BookingHistoryPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: const ReserveNavbar(),
-      backgroundColor: const Color(0xFFF3F4F6),
+      backgroundColor: bgCream,
+
+      bottomNavigationBar: const ReserveNavbar(
+        active: NavItem.history,
+      ),
+
       body: SafeArea(
         child: Center(
           child: Container(
@@ -66,29 +79,13 @@ class _BookingHistoryPageState extends State<BookingHistoryPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 /// ================= HEADER =================
-                Row(
-                  children: [
-                    InkWell(
-                      onTap: () => Navigator.pop(context),
-                      borderRadius: BorderRadius.circular(30),
-                      child: Container(
-                        padding: const EdgeInsets.all(10),
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(color: Colors.grey.shade300),
-                        ),
-                        child: const Icon(Icons.arrow_back),
-                      ),
-                    ),
-                    const SizedBox(width: 16),
-                    const Text(
-                      "History",
-                      style: TextStyle(
-                        fontSize: 28,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
+                const Text(
+                  "History",
+                  style: TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.w800, // ✅ heavier bold
+                    color: primaryIndigo,
+                  ),
                 ),
 
                 const SizedBox(height: 30),
@@ -98,12 +95,17 @@ class _BookingHistoryPageState extends State<BookingHistoryPage> {
                   child: FutureBuilder<List<Booking>>(
                     future: _future,
                     builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const Center(child: CircularProgressIndicator());
+                      if (snapshot.connectionState ==
+                          ConnectionState.waiting) {
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
                       }
 
                       if (snapshot.hasError) {
-                        return Center(child: Text(snapshot.error.toString()));
+                        return Center(
+                          child: Text(snapshot.error.toString()),
+                        );
                       }
 
                       final bookings = snapshot.data!;
@@ -127,14 +129,15 @@ class _BookingHistoryPageState extends State<BookingHistoryPage> {
                                 final b = bookings[index];
 
                                 return Container(
-                                  padding: const EdgeInsets.all(16),
+                                  padding: const EdgeInsets.all(18),
                                   decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(12),
+                                    color: cardWhite,
+                                    borderRadius: BorderRadius.circular(14),
+                                    border: Border.all(color: borderGray),
                                     boxShadow: const [
                                       BoxShadow(
                                         color: Colors.black12,
-                                        blurRadius: 8,
+                                        blurRadius: 10,
                                         offset: Offset(0, 4),
                                       )
                                     ],
@@ -143,8 +146,8 @@ class _BookingHistoryPageState extends State<BookingHistoryPage> {
                                     children: [
                                       /// IMAGE
                                       FutureBuilder<FitnessClass?>(
-                                        future: _fetchClass(
-                                            context, b.classId),
+                                        future:
+                                        _fetchClass(context, b.classId),
                                         builder: (context, snap) {
                                           final imageUrl =
                                               snap.data?.imageUrl ?? "";
@@ -153,16 +156,15 @@ class _BookingHistoryPageState extends State<BookingHistoryPage> {
 
                                           return ClipRRect(
                                             borderRadius:
-                                            BorderRadius.circular(10),
+                                            BorderRadius.circular(12),
                                             child: fullUrl.isEmpty
                                                 ? Container(
                                               width: 120,
                                               height: 90,
-                                              color:
-                                              Colors.grey.shade300,
+                                              color: Colors.grey.shade300,
                                               child: const Center(
-                                                  child: Text(
-                                                      "No Image")),
+                                                child: Text("No Image"),
+                                              ),
                                             )
                                                 : Image.network(
                                               fullUrl,
@@ -176,7 +178,7 @@ class _BookingHistoryPageState extends State<BookingHistoryPage> {
 
                                       const SizedBox(width: 20),
 
-                                      /// TEXT CONTENT
+                                      /// TEXT
                                       Expanded(
                                         child: Column(
                                           crossAxisAlignment:
@@ -186,14 +188,16 @@ class _BookingHistoryPageState extends State<BookingHistoryPage> {
                                               b.className,
                                               style: const TextStyle(
                                                 fontSize: 20,
-                                                fontWeight: FontWeight.bold,
+                                                fontWeight:
+                                                FontWeight.w700, // ✅ stronger
+                                                color: primaryOrange,
                                               ),
                                             ),
                                             const SizedBox(height: 6),
                                             Text(
-                                              "${b.fullName} - ${b.phoneNumber}",
+                                              "${b.fullName} • ${b.phoneNumber}",
                                               style: const TextStyle(
-                                                color: Colors.grey,
+                                                color: mutedGray,
                                               ),
                                             ),
                                           ],
@@ -212,7 +216,7 @@ class _BookingHistoryPageState extends State<BookingHistoryPage> {
                                                 .substring(0, 16),
                                             style: const TextStyle(
                                               fontSize: 12,
-                                              color: Colors.grey,
+                                              color: mutedGray,
                                             ),
                                           ),
                                           const SizedBox(height: 6),
@@ -225,7 +229,7 @@ class _BookingHistoryPageState extends State<BookingHistoryPage> {
                                                 snap.data?.location ?? "",
                                                 style: const TextStyle(
                                                   fontSize: 12,
-                                                  color: Colors.grey,
+                                                  color: mutedGray,
                                                 ),
                                               );
                                             },
@@ -235,18 +239,31 @@ class _BookingHistoryPageState extends State<BookingHistoryPage> {
 
                                           Row(
                                             children: [
-                                              TextButton(
+                                              OutlinedButton(
                                                 onPressed: () async {
                                                   await BookingService
                                                       .deleteBooking(
-                                                      context, b.id);
+                                                    context,
+                                                    b.id,
+                                                  );
                                                   _reload();
                                                 },
-                                                style: TextButton.styleFrom(
+                                                style:
+                                                OutlinedButton.styleFrom(
                                                   foregroundColor:
-                                                  Colors.red,
+                                                  primaryOrange,
+                                                  side: const BorderSide(
+                                                    color: primaryOrange,
+                                                  ),
+                                                  shape:
+                                                  RoundedRectangleBorder(
+                                                    borderRadius:
+                                                    BorderRadius.circular(
+                                                        10),
+                                                  ),
                                                 ),
-                                                child: const Text("Delete"),
+                                                child:
+                                                const Text("Delete"),
                                               ),
                                               const SizedBox(width: 8),
                                               ElevatedButton(
@@ -256,11 +273,25 @@ class _BookingHistoryPageState extends State<BookingHistoryPage> {
                                                     MaterialPageRoute(
                                                       builder: (_) =>
                                                           EditBookingPage(
-                                                              booking: b),
+                                                            booking: b,
+                                                          ),
                                                     ),
                                                   );
                                                   _reload();
                                                 },
+                                                style:
+                                                ElevatedButton.styleFrom(
+                                                  backgroundColor:
+                                                  primaryIndigo,
+                                                  foregroundColor:
+                                                  Colors.white, // ✅ white text
+                                                  shape:
+                                                  RoundedRectangleBorder(
+                                                    borderRadius:
+                                                    BorderRadius.circular(
+                                                        10),
+                                                  ),
+                                                ),
                                                 child: const Text("Edit"),
                                               ),
                                             ],
@@ -280,16 +311,11 @@ class _BookingHistoryPageState extends State<BookingHistoryPage> {
                           Expanded(
                             flex: 1,
                             child: Container(
-                              padding: const EdgeInsets.all(20),
+                              padding: const EdgeInsets.all(24),
                               decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(12),
-                                boxShadow: const [
-                                  BoxShadow(
-                                    color: Colors.black12,
-                                    blurRadius: 8,
-                                  )
-                                ],
+                                color: cardWhite,
+                                borderRadius: BorderRadius.circular(16),
+                                border: Border.all(color: borderGray),
                               ),
                               child: Column(
                                 children: [
@@ -304,15 +330,33 @@ class _BookingHistoryPageState extends State<BookingHistoryPage> {
                                     style: TextStyle(
                                       fontSize: 18,
                                       fontWeight: FontWeight.bold,
+                                      color: primaryIndigo,
                                     ),
                                   ),
                                   const SizedBox(height: 16),
                                   ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: primaryIndigo,
+                                      foregroundColor:
+                                      Colors.white, // ✅ white text
+                                      padding:
+                                      const EdgeInsets.symmetric(
+                                        horizontal: 28,
+                                        vertical: 12,
+                                      ),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                        BorderRadius.circular(12),
+                                      ),
+                                    ),
                                     onPressed: () {
-                                      Navigator.pushNamed(
-                                          context, "/classes");
+                                      Navigator.pushReplacementNamed(
+                                        context,
+                                        AppRoutes.classes,
+                                      );
                                     },
-                                    child: const Text("Explore more"),
+                                    child:
+                                    const Text("Explore more"),
                                   ),
                                 ],
                               ),

@@ -18,6 +18,14 @@ class _EditBookingPageState extends State<EditBookingPage> {
 
   bool saving = false;
 
+  // 🎨 COLOR PALETTE (shared theme)
+  static const Color bgCream = Color(0xFFFFF7ED);
+  static const Color cardWhite = Colors.white;
+  static const Color primaryOrange = Color(0xFFF97316);
+  static const Color primaryIndigo = Color(0xFF3F3D6B);
+  static const Color borderGray = Color(0xFFE5E7EB);
+  static const Color inputFill = Color(0xFFFFFBF5);
+
   @override
   void initState() {
     super.initState();
@@ -72,9 +80,14 @@ class _EditBookingPageState extends State<EditBookingPage> {
     return InputDecoration(
       labelText: label,
       filled: true,
-      fillColor: const Color(0xFFF9FAFB),
+      fillColor: inputFill,
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(10),
+        borderSide: const BorderSide(color: borderGray),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(10),
+        borderSide: const BorderSide(color: borderGray),
       ),
     );
   }
@@ -82,12 +95,18 @@ class _EditBookingPageState extends State<EditBookingPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF3F4F6),
+      backgroundColor: bgCream,
       appBar: AppBar(
-        title: const Text("Edit Booking"),
+        title: const Text(
+          "Edit Booking",
+          style: TextStyle(
+            fontWeight: FontWeight.w700,
+            color: primaryIndigo,
+          ),
+        ),
         elevation: 0,
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
+        backgroundColor: bgCream,
+        foregroundColor: primaryIndigo,
       ),
       body: Center(
         child: SingleChildScrollView(
@@ -96,8 +115,9 @@ class _EditBookingPageState extends State<EditBookingPage> {
             margin: const EdgeInsets.all(24),
             padding: const EdgeInsets.all(30),
             decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(12),
+              color: cardWhite,
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(color: borderGray),
               boxShadow: const [
                 BoxShadow(
                   color: Colors.black12,
@@ -127,7 +147,7 @@ class _EditBookingPageState extends State<EditBookingPage> {
 
                 const SizedBox(height: 20),
 
-                /// PHONE + EMAIL (ROW)
+                /// PHONE + EMAIL
                 Row(
                   children: [
                     Expanded(
@@ -154,9 +174,12 @@ class _EditBookingPageState extends State<EditBookingPage> {
                   child: ElevatedButton(
                     onPressed: saving ? null : _save,
                     style: ElevatedButton.styleFrom(
+                      backgroundColor: primaryOrange,
+                      foregroundColor: Colors.white,
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 28, vertical: 14),
-                      backgroundColor: const Color(0xFF3B82F6),
+                        horizontal: 28,
+                        vertical: 14,
+                      ),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
@@ -172,7 +195,10 @@ class _EditBookingPageState extends State<EditBookingPage> {
                     )
                         : const Text(
                       "Save Changes",
-                      style: TextStyle(fontSize: 16),
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ),
                 )
