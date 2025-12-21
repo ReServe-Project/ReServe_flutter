@@ -5,6 +5,10 @@ import '../../features/auth/splash_page.dart';
 import '../../features/auth/login_page.dart';
 import '../../features/profile/profile_page.dart';
 
+import '../../home_search/home/landing_screen.dart';
+import '../../home_search/search/classes_search_page.dart';
+import '../widgets/reserve_navbar.dart'; 
+
 class AppRouter {
   static const String initialRoute = AppRoutes.splash;
 
@@ -16,6 +20,10 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => const LoginPage());
       case AppRoutes.profile:
         return MaterialPageRoute(builder: (_) => const ProfilePage());
+      case AppRoutes.home:
+        return MaterialPageRoute(builder: (_) => const LandingScreen());
+      case AppRoutes.classes:
+        return MaterialPageRoute(builder: (_) => const ClassesSearchPage());
       default:
         return MaterialPageRoute(
           builder: (_) => const Scaffold(
