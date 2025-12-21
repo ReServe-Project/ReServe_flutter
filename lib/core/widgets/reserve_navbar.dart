@@ -72,7 +72,7 @@ class ReserveNavbar extends StatelessWidget {
                     context,
                     "Personal Goals",
                     active: active == NavItem.goals,
-                    onTap: () => _goTo(context, const PersonalGoalsPlaceholder()),
+                    onTap: () => Navigator.pushReplacementNamed(context, AppRoutes.personalGoals),
                   ),
                   const SizedBox(width: 54),
                   _navButton(

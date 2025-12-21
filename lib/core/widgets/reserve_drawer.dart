@@ -62,7 +62,7 @@ class ReserveDrawer extends StatelessWidget {
             ListTile(
               leading: const Icon(Icons.flag_rounded),
               title: const Text("Personal Goals"),
-              onTap: () => _goTo(context, const PersonalGoalsPlaceholder()),
+              onTap: () => Navigator.pushReplacementNamed(context, AppRoutes.personalGoals),
             ),
             ListTile(
               leading: const Icon(Icons.history_rounded),

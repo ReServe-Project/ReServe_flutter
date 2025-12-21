@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../core/auth/auth_provider.dart';
+import '../../core/widgets/reserve_navbar.dart';
+import '../../core/widgets/reserve_drawer.dart';
 import '../../features/profile/services/profile_api.dart';
 import '../../features/profile/models/user_profile.dart';
 import '../models/PersonalGoal.dart';
@@ -341,12 +343,12 @@ class _PersonalGoalsPageState extends State<PersonalGoalsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: _bg,
-      appBar: AppBar(
-        backgroundColor: _bg,
-        elevation: 0,
-        title: const Text('Personal Goals'),
-      ),
-      body: SafeArea(
+      drawer: const ReserveDrawer(),
+      body: Column(
+        children: [
+          const ReserveNavbar(active: NavItem.goals),
+          Expanded(
+            child: SafeArea(
         child: Center(
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 1200),
@@ -383,6 +385,9 @@ class _PersonalGoalsPageState extends State<PersonalGoalsPage> {
             ),
           ),
         ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -537,8 +542,8 @@ class _PersonalGoalsPageState extends State<PersonalGoalsPage> {
       children: [
         // Avatar (overlapping)
         Positioned(
-          left: 10,
-          top: -6,
+          left: 20,
+          top: -1,
           child: Container(
             width: 92,
             height: 92,
@@ -564,13 +569,15 @@ class _PersonalGoalsPageState extends State<PersonalGoalsPage> {
                   final name = (snap.data?.displayName?.trim().isNotEmpty ?? false)
                       ? snap.data!.displayName
                       : (context.read<AuthProvider>().username ?? 'Your');
-
-                  return Text(
-                    "'s Personal Goals",
-                    style: const TextStyle(
-                      fontSize: 30,
+                  return Transform.translate(
+                    offset: const Offset(40, 10),
+                    child: Text(
+                      "'s Personal Goals",
+                      style: const TextStyle(
+                        fontSize: 30,
                       fontWeight: FontWeight.w900,
                       color: Color(0xFF111014),
+                      ),
                     ),
                   );
                 },
