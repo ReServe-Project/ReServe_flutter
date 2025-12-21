@@ -300,7 +300,7 @@ class _PersonalGoalsPageState extends State<PersonalGoalsPage> {
     } catch (e) {
       // Revert optimistic update on error by reloading
       await _loadGoalsForSelectedDate();
-      _showSnack('Failed to add goal: $e');
+      
     }
   }
 
@@ -329,7 +329,7 @@ class _PersonalGoalsPageState extends State<PersonalGoalsPage> {
         // If we're showing month list, just reload calendar and rebuild list
         await _loadCalendar(year: _year, month: _month, keepGoalsList: false);
       }
-      _showSnack('Failed to toggle goal: $e');
+      
     }
   }
 
@@ -356,21 +356,8 @@ class _PersonalGoalsPageState extends State<PersonalGoalsPage> {
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
               child: LayoutBuilder(
                 builder: (context, c) {
-                  final isWide = c.maxWidth >= 900;
-
                   final left = _buildLeftCalendar();
                   final right = _buildRightGoalsPanel();
-
-                  if (isWide) {
-                    return Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(width: 460, child: left),
-                        const SizedBox(width: 28),
-                        Expanded(child: right),
-                      ],
-                    );
-                  }
 
                   return ListView(
                     children: [
@@ -394,10 +381,10 @@ class _PersonalGoalsPageState extends State<PersonalGoalsPage> {
 
   Widget _buildLeftCalendar() {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Container(
-          width: 436,
+          width: 700,
           padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
           decoration: BoxDecoration(
             color: _orange,
@@ -413,7 +400,7 @@ class _PersonalGoalsPageState extends State<PersonalGoalsPage> {
         ),
         const SizedBox(height: 14),
         Container(
-          width: 436,
+          width: 700,
           height: 439,
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(

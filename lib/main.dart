@@ -24,6 +24,15 @@ void main() {
             return BlogProvider(client: authProvider.request);
           },
         ),
+        /// 🔐 Django session / cookies
+        Provider<CookieRequest>(
+          create: (_) => CookieRequest(),
+        ),
+
+        /// 🔑 Your existing auth provider
+        ChangeNotifierProvider(
+          create: (_) => AuthProvider(),
+        ),
       ],
       child: const MyApp(),
     ),

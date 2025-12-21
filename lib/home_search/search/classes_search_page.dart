@@ -12,11 +12,14 @@ import 'package:reserve_mobile/home_search/widgets/class_card.dart';
 
 
 class ClassesSearchPage extends StatefulWidget {
-  const ClassesSearchPage({super.key});
+  final String? initialCategory; // <-- added
+
+  const ClassesSearchPage({super.key, this.initialCategory}); // <-- updated
 
   @override
   State<ClassesSearchPage> createState() => _ClassesSearchPageState();
 }
+
 
 class _ClassesSearchPageState extends State<ClassesSearchPage> {
   // ================== FILTER STATE ==================
@@ -42,9 +45,14 @@ class _ClassesSearchPageState extends State<ClassesSearchPage> {
 
   @override
   void initState() {
-    super.initState();
-    // ❌ DO NOT call provider/context-based fetch here
+  super.initState();
+  // ✅ safe: no provider call, just set initial filter if provided
+  final initial = widget.initialCategory;
+  if (initial != null && categories.contains(initial)) {
+    selectedCategory = initial;
   }
+}
+
 
   // ---------- Helpers ----------
   String _labelToCode(String label) {

@@ -7,6 +7,7 @@ import '../routes/app_routes.dart';
 import 'package:reserve_mobile/features/blog/screens/blog_list_screen.dart';
 
 
+
 enum NavItem { home, classes, history, blog, goals, profile }
 
 class ReserveNavbar extends StatelessWidget {
@@ -52,7 +53,7 @@ class ReserveNavbar extends StatelessWidget {
               label: "History",
               icon: Icons.history_rounded,
               isActive: active == NavItem.history,
-              onTap: () => _goTo(context, const HistoryPlaceholder()),
+              onTap: () => Navigator.pushReplacementNamed(context, AppRoutes.history),
             ),
             _navItem(
               context,
@@ -66,21 +67,21 @@ class ReserveNavbar extends StatelessWidget {
               label: "Goals",
               icon: Icons.timer_outlined,
               isActive: active == NavItem.goals,
-              onTap: () => _goTo(context, const PersonalGoalsPlaceholder()),
+              onTap: () => Navigator.pushReplacementNamed(context, AppRoutes.personalGoals),
             ),
             _navItem(
-              context,
-              label: auth.request.loggedIn ? "Profile" : "Login",
-              icon: Icons.person_rounded,
-              isActive: active == NavItem.profile,
-              onTap: () {
-  final auth = context.read<AuthProvider>();
-  if (auth.request.loggedIn) {
-    Navigator.pushReplacementNamed(context, AppRoutes.profile);
-  } else {
-    Navigator.pushReplacementNamed(context, AppRoutes.login);
-  }
-}
+                context,
+                label: auth.request.loggedIn ? "Profile" : "Login",
+                icon: Icons.person_rounded,
+                isActive: active == NavItem.profile,
+                onTap: () {
+                  final auth = context.read<AuthProvider>();
+                  if (auth.request.loggedIn) {
+                    Navigator.pushReplacementNamed(context, AppRoutes.profile);
+                  } else {
+                    Navigator.pushReplacementNamed(context, AppRoutes.login);
+                  }
+                }
             ),
           ],
         ),
@@ -89,12 +90,12 @@ class ReserveNavbar extends StatelessWidget {
   }
 
   Widget _navItem(
-    BuildContext context, {
-    required String label,
-    required IconData icon,
-    required bool isActive,
-    required VoidCallback onTap,
-  }) {
+      BuildContext context, {
+        required String label,
+        required IconData icon,
+        required bool isActive,
+        required VoidCallback onTap,
+      }) {
     final activeColor = const Color(0xFF4E4B7A); // your purple
     final inactiveColor = const Color(0xFF9B8E86); // soft brown/grey
 
@@ -154,10 +155,4 @@ class PersonalGoalsPlaceholder extends StatelessWidget {
   }
 }
 
-class HistoryPlaceholder extends StatelessWidget {
-  const HistoryPlaceholder({super.key});
-  @override
-  Widget build(BuildContext context) {
-    return const Scaffold(body: Center(child: Text("History Module Placeholder")));
-  }
-}
+
