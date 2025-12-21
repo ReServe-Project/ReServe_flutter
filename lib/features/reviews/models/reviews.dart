@@ -1,31 +1,27 @@
-// To parse this JSON data, do
-//
-//     final reviews = reviewsFromJson(jsonString);
-
 import 'dart:convert';
 
-List<Reviews> reviewsFromJson(String str) => List<Reviews>.from(json.decode(str).map((x) => Reviews.fromJson(x)));
+List<Review> reviewsFromJson(String str) => List<Review>.from(json.decode(str).map((x) => Review.fromJson(x)));
 
-String reviewsToJson(List<Reviews> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+String reviewsToJson(List<Review> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
-class Reviews {
+class Review {
   int id;
-  String user;
+  String username; // Changed from 'user' to 'username'
   int rating;
   String comment;
   DateTime createdAt;
 
-  Reviews({
+  Review({
     required this.id,
-    required this.user,
+    required this.username,
     required this.rating,
     required this.comment,
     required this.createdAt,
   });
 
-  factory Reviews.fromJson(Map<String, dynamic> json) => Reviews(
+  factory Review.fromJson(Map<String, dynamic> json) => Review(
     id: json["id"],
-    user: json["user"],
+    username: json["user"], // Keeps 'user' as the JSON key from your backend
     rating: json["rating"],
     comment: json["comment"],
     createdAt: DateTime.parse(json["created_at"]),
@@ -33,7 +29,7 @@ class Reviews {
 
   Map<String, dynamic> toJson() => {
     "id": id,
-    "user": user,
+    "username": username,
     "rating": rating,
     "comment": comment,
     "created_at": createdAt.toIso8601String(),

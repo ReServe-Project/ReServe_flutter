@@ -3,6 +3,7 @@ import 'package:reserve_mobile/core/widgets/reserve_navbar.dart';
 import 'package:reserve_mobile/home_search/models/fitness_class.dart';
 import 'package:reserve_mobile/home_search/services/classes_service.dart';
 import 'package:reserve_mobile/core/utils/image_utils.dart';
+import 'package:reserve_mobile/features/checkout/pages/checkout_page.dart';
 
 class ClassDetailPage extends StatelessWidget {
   final FitnessClass fitnessClass; // passed from list (may be partial)
@@ -79,11 +80,10 @@ class ClassDetailPage extends StatelessWidget {
       height: 380,
       child: url.isNotEmpty
           ? Image.network(
-  corsFix(url),
-  fit: BoxFit.cover,
-  errorBuilder: (_, __, ___) => _fallbackHero(),
-)
-
+        corsFix(url),
+        fit: BoxFit.cover,
+        errorBuilder: (_, __, ___) => _fallbackHero(),
+      )
           : _fallbackHero(),
     );
   }
@@ -103,7 +103,7 @@ class ClassDetailPage extends StatelessWidget {
     final dateText = (dt == null) ? "-" : _formatDateTime(dt);
 
     final ownerText =
-        (c.owner == null || c.owner!.trim().isEmpty) ? "-" : c.owner!.trim();
+    (c.owner == null || c.owner!.trim().isEmpty) ? "-" : c.owner!.trim();
 
     final locText = c.location.trim().isEmpty ? "-" : c.location.trim();
     final descText = c.description.trim().isEmpty ? "-" : c.description.trim();
@@ -131,14 +131,52 @@ class ClassDetailPage extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 16),
-          Text(
-            c.formattedPrice,
-            style: const TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.w800,
-              color: Color(0xFFE7773A),
-            ),
+
+          // PRICE + CHECKOUT BUTTON
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                c.formattedPrice,
+                style: const TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.w800,
+                  color: Color(0xFFE7773A),
+                ),
+              ),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFFE7773A),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 28,
+                    vertical: 14,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(999),
+                  ),
+                ),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => CheckoutPage(
+                        classId: c.id!,
+                        className: c.name,
+                      ),
+                    ),
+                  );
+                },
+                child: const Text(
+                  "Checkout",
+                  style: TextStyle(
+                    fontWeight: FontWeight.w800,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ],
           ),
+
           const SizedBox(height: 26),
           Wrap(
             spacing: 18,
