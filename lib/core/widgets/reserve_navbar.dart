@@ -4,9 +4,10 @@ import 'package:provider/provider.dart';
 import '../auth/auth_provider.dart';
 import '../config/app_config.dart';
 import '../routes/app_routes.dart';
+import 'package:reserve_mobile/features/blog/screens/blog_list_screen.dart';
 
 
-enum NavItem { home, classes, blog, goals, history }
+enum NavItem { home, classes, history, blog, goals, profile }
 
 class ReserveNavbar extends StatelessWidget {
   final NavItem? active;
@@ -14,127 +15,114 @@ class ReserveNavbar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 76,
-      padding: const EdgeInsets.symmetric(horizontal: 40),
-      decoration: BoxDecoration(
-        color: const Color(0xFFF7EDE3),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.08),
-            blurRadius: 12,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          Builder(
-      builder: (context) => IconButton(
-        icon: const Icon(Icons.menu),
-        color: const Color(0xFF3B3B3B),
-        iconSize: 26,
-        onPressed: () {
-          Scaffold.of(context).openDrawer();
-        },
-      ),
-    ),
+    final auth = context.watch<AuthProvider>();
 
-    const SizedBox(width: 12),
-          Image.asset("img/mini-logo.png", height: 34),
-          Expanded(
-            child: Center(
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  _navButton(
-                    context,
-                    "Home",
-                    active: active == NavItem.home,
-                    onTap: () => Navigator.pushReplacementNamed(context, AppRoutes.home),
-                  ),
-                  const SizedBox(width: 54),
-                  _navButton(
-                    context,
-                    "Classes",
-                    active: active == NavItem.classes,
-                    onTap: () => Navigator.pushReplacementNamed(context, AppRoutes.classes),
-                  ),
-                  const SizedBox(width: 54),
-                  _navButton(
-                    context,
-                    "Blog",
-                    active: active == NavItem.blog,
-                    onTap: () => _goTo(context, const BlogPlaceholder()),
-                  ),
-                  const SizedBox(width: 54),
-                  _navButton(
-                    context,
-                    "Personal Goals",
-                    active: active == NavItem.goals,
-                    onTap: () => _goTo(context, const PersonalGoalsPlaceholder()),
-                  ),
-                  const SizedBox(width: 54),
-                  _navButton(
-                    context,
-                    "History",
-                    active: active == NavItem.history,
-                    onTap: () => _goTo(context, const HistoryPlaceholder()),
-                  ),
-                ],
-              ),
+    return SafeArea(
+      top: false,
+      child: Container(
+        height: 74,
+        decoration: BoxDecoration(
+          color: const Color(0xFFF7EDE3),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.10),
+              blurRadius: 14,
+              offset: const Offset(0, -2),
             ),
-          ),
-
-          Consumer<AuthProvider>(
-  builder: (context, auth, _) {
-    // IF LOGGED IN → LOGOUT
-    if (auth.request.loggedIn) {
-      return ElevatedButton(
-        style: _authButtonStyle(),
-        onPressed: () async {
-          await auth.logout(baseUrl: AppConfig.baseUrl);
-
-          if (!context.mounted) return;
-          Navigator.pushReplacementNamed(context, AppRoutes.login);
-        },
-        child: const Text('Logout'),
-      );
-    }
-
-    // IF NOT LOGGED IN → LOGIN
-    return ElevatedButton(
-      style: _authButtonStyle(),
-      onPressed: () {
-        Navigator.pushNamed(context, AppRoutes.login);
-      },
-      child: const Text('Login'),
-    );
-  },
-),
-
-        ],
+          ],
+        ),
+        child: Row(
+          children: [
+            _navItem(
+              context,
+              label: "Home",
+              icon: Icons.home_rounded,
+              isActive: active == NavItem.home,
+              onTap: () => Navigator.pushReplacementNamed(context, AppRoutes.home),
+            ),
+            _navItem(
+              context,
+              label: "Classes",
+              icon: Icons.fitness_center_rounded, // barbel
+              isActive: active == NavItem.classes,
+              onTap: () => Navigator.pushReplacementNamed(context, AppRoutes.classes),
+            ),
+            _navItem(
+              context,
+              label: "History",
+              icon: Icons.history_rounded,
+              isActive: active == NavItem.history,
+              onTap: () => _goTo(context, const HistoryPlaceholder()),
+            ),
+            _navItem(
+              context,
+              label: "Blog",
+              icon: Icons.image_outlined,
+              isActive: active == NavItem.blog,
+              onTap: () => Navigator.pushReplacementNamed(context, AppRoutes.blog),
+            ),
+            _navItem(
+              context,
+              label: "Goals",
+              icon: Icons.timer_outlined,
+              isActive: active == NavItem.goals,
+              onTap: () => _goTo(context, const PersonalGoalsPlaceholder()),
+            ),
+            _navItem(
+              context,
+              label: auth.request.loggedIn ? "Profile" : "Login",
+              icon: Icons.person_rounded,
+              isActive: active == NavItem.profile,
+              onTap: () {
+  final auth = context.read<AuthProvider>();
+  if (auth.request.loggedIn) {
+    Navigator.pushReplacementNamed(context, AppRoutes.profile);
+  } else {
+    Navigator.pushReplacementNamed(context, AppRoutes.login);
+  }
+}
+            ),
+          ],
+        ),
       ),
     );
   }
 
-  Widget _navButton(
-    BuildContext context,
-    String text, {
-    required bool active,
+  Widget _navItem(
+    BuildContext context, {
+    required String label,
+    required IconData icon,
+    required bool isActive,
     required VoidCallback onTap,
   }) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(8),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
-        child: Text(
-          text,
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: active ? FontWeight.w700 : FontWeight.w600,
-            color: active ? const Color(0xFFE7773A) : const Color(0xFF3B3B3B),
+    final activeColor = const Color(0xFF4E4B7A); // your purple
+    final inactiveColor = const Color(0xFF9B8E86); // soft brown/grey
+
+    return Expanded(
+      child: InkWell(
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                icon,
+                size: 24,
+                color: isActive ? activeColor : inactiveColor,
+              ),
+              const SizedBox(height: 6),
+              Text(
+                label,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: 11.5,
+                  fontWeight: isActive ? FontWeight.w800 : FontWeight.w700,
+                  color: isActive ? activeColor : inactiveColor,
+                ),
+              ),
+            ],
           ),
         ),
       ),
@@ -142,66 +130,34 @@ class ReserveNavbar extends StatelessWidget {
   }
 
   void _goTo(BuildContext context, Widget page) {
-  Navigator.pushReplacement(
-    context,
-    MaterialPageRoute(builder: (_) => page),
-  );
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (_) => page),
+    );
+  }
 }
 
-}
-
+// keep your placeholders (same as yours)
 class BlogPlaceholder extends StatelessWidget {
   const BlogPlaceholder({super.key});
-
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(child: Text("Blog Module Placeholder")),
-    );
+    return const Scaffold(body: Center(child: Text("Blog Module Placeholder")));
   }
 }
 
 class PersonalGoalsPlaceholder extends StatelessWidget {
   const PersonalGoalsPlaceholder({super.key});
-
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(child: Text("Personal Goals Module Placeholder")),
-    );
+    return const Scaffold(body: Center(child: Text("Personal Goals Module Placeholder")));
   }
 }
 
 class HistoryPlaceholder extends StatelessWidget {
   const HistoryPlaceholder({super.key});
-
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(child: Text("History Module Placeholder")),
-    );
+    return const Scaffold(body: Center(child: Text("History Module Placeholder")));
   }
-}
-
-class AccountsPlaceholder extends StatelessWidget {
-  const AccountsPlaceholder({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(child: Text("Accounts / Login Module Placeholder")),
-    );
-  }
-}
-
-ButtonStyle _authButtonStyle() {
-  return ElevatedButton.styleFrom(
-    backgroundColor: const Color(0xFF4E4B7A), // purple
-    foregroundColor: Colors.white,            // text color
-    padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 14),
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(999), // pill
-    ),
-    elevation: 0,
-  );
 }

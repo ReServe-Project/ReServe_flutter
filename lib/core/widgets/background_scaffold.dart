@@ -6,7 +6,7 @@ class BackgroundScaffold extends StatelessWidget {
   final PreferredSizeWidget? appBar;
   final Widget? floatingActionButton;
   final FloatingActionButtonLocation? floatingActionButtonLocation;
-
+  final Widget? bottomNavigationBar;
   /// Overlay controls readability.
   final double overlayOpacity; // 0.0 - 1.0
 
@@ -17,6 +17,7 @@ class BackgroundScaffold extends StatelessWidget {
     this.appBar,
     this.floatingActionButton,
     this.floatingActionButtonLocation,
+    this.bottomNavigationBar,
     this.overlayOpacity = 0.55,
   });
 
@@ -26,6 +27,7 @@ class BackgroundScaffold extends StatelessWidget {
       appBar: appBar,
       floatingActionButton: floatingActionButton,
       floatingActionButtonLocation: floatingActionButtonLocation,
+      bottomNavigationBar: bottomNavigationBar,
       body: Stack(
         children: [
           Positioned.fill(

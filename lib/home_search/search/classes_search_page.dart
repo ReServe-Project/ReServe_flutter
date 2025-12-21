@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:reserve_mobile/core/auth/auth_provider.dart';
-import 'package:reserve_mobile/core/widgets/reserve_drawer.dart';
 import 'package:reserve_mobile/core/widgets/reserve_navbar.dart';
 
 import 'package:reserve_mobile/home_search/models/fitness_class.dart';
@@ -119,10 +118,9 @@ class _ClassesSearchPageState extends State<ClassesSearchPage> {
 
     return Scaffold(
       backgroundColor: const Color(0xFFFDF3EE),
-      drawer: const ReserveDrawer(),
+      bottomNavigationBar: const ReserveNavbar(active: NavItem.classes),
       body: Column(
         children: [
-          const ReserveNavbar(active: NavItem.classes),
           Expanded(
             child: SingleChildScrollView(
               child: Column(

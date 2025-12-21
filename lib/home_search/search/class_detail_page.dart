@@ -18,9 +18,9 @@ class ClassDetailPage extends StatelessWidget {
     if (id == null) {
       return Scaffold(
         backgroundColor: const Color(0xFFFDF3EE),
+        bottomNavigationBar: const ReserveNavbar(active: NavItem.classes),
         body: Column(
           children: [
-            const ReserveNavbar(active: NavItem.classes),
             const Expanded(
               child: Center(child: Text("Invalid class (missing id).")),
             ),
