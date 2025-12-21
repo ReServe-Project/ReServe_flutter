@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:reserve_mobile/core/widgets/reserve_navbar.dart';
 
-
 import '../../core/auth/auth_provider.dart';
 import '../../core/config/app_config.dart';
 import '../../core/routes/app_routes.dart';
@@ -61,196 +60,149 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   @override
-Widget build(BuildContext context) {
-  return BackgroundScaffold(
-    backgroundAsset: 'assets/images/bg_gym.jpg',
-    overlayOpacity: 0.55,
-    child: Column(
-      children: [
-        const ReserveNavbar(), // navbar at the top
+  Widget build(BuildContext context) {
+    return BackgroundScaffold(
+      backgroundAsset: 'assets/images/bg_gym.jpg',
+      overlayOpacity: 0.55,
+      child: Column(
+        children: [
+          const ReserveNavbar(),
+          Expanded(
+            child: FutureBuilder<UserProfile>(
+              future: _futureProfile,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                }
 
-        Expanded(
-          child: FutureBuilder<UserProfile>(
-            future: _futureProfile,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(child: CircularProgressIndicator());
-              }
-
-              if (snapshot.hasError) {
-                return Center(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Card(
-                      child: Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            const Text('Failed to load profile.'),
-                            const SizedBox(height: 12),
-                            Text(snapshot.error.toString()),
-                            const SizedBox(height: 12),
-                            ElevatedButton(
-                              onPressed: _refresh,
-                              child: const Text('Retry'),
-                            ),
-                          ],
+                if (snapshot.hasError) {
+                  return Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Card(
+                        child: Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Text('Failed to load profile.'),
+                              const SizedBox(height: 12),
+                              Text(snapshot.error.toString()),
+                              const SizedBox(height: 12),
+                              ElevatedButton(
+                                onPressed: _refresh,
+                                child: const Text('Retry'),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                );
-              }
+                  );
+                }
 
-              final profile = snapshot.data!;
-              final roleText = _roleLabel(profile.role);
-              final isInstructor = _isInstructor(profile.role);
+                final profile = snapshot.data!;
+                final roleText = _roleLabel(profile.role);
+                final isInstructor = _isInstructor(profile.role);
 
-              return ListView(
-                padding: const EdgeInsets.all(16),
-                children: [
-<<<<<<< HEAD
-                  _InfoRow(label: 'RS ID', value: profile.rsId ?? '-'),
-                  _InfoRow(label: 'Username', value: profile.username),
-                  _InfoRow(label: 'Role', value: roleText),
-                ],
-              ),
-              const SizedBox(height: 16),
-              _InfoCard(
-                title: 'Body Metrics',
-                children: [
-                  _InfoRow(
-                    label: 'Height',
-                    value: profile.heightCm == null
-                        ? '-'
-                        : '${profile.heightCm} cm',
-                  ),
-                  _InfoRow(
-                    label: 'Weight',
-                    value: profile.weightKg == null
-                        ? '-'
-                        : '${profile.weightKg} kg',
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-              _InfoCard(
-                title: 'Activity',
-                children: [
-                  _InfoRow(
-                    label: 'Last login',
-                    value: _formatLastLogin(profile.lastLoginIso),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton.icon(
-                  onPressed: () async {
-                    final updated = await Navigator.push<UserProfile?>(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => EditProfilePage(initial: profile),
-=======
-                  _ProfileHeaderCard(
-                    displayName: profile.displayName,
-                    handle: profile.handle,
-                    roleLabel: roleText,
-                    isInstructor: isInstructor,
-                  ),
-                  const SizedBox(height: 16),
-                  _InfoCard(
-                    title: 'Account',
-                    children: [
-                      _InfoRow(label: 'RS ID', value: profile.rsId ?? '-'),
-                      _InfoRow(label: 'Username', value: profile.username),
-                      _InfoRow(label: 'Role', value: roleText),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-                  _InfoCard(
-                    title: 'Body Metrics',
-                    children: [
-                      _InfoRow(
-                        label: 'Height',
-                        value: profile.heightCm == null ? '-' : '${profile.heightCm} cm',
->>>>>>> e0ce1a73096d3876554565d7ed3a27d0ad053193
-                      ),
-                      _InfoRow(
-                        label: 'Weight',
-                        value: profile.weightKg == null ? '-' : '${profile.weightKg} kg',
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-                  _InfoCard(
-                    title: 'Activity',
-                    children: [
-                      _InfoRow(label: 'Last login', value: _formatLastLogin(profile.lastLoginIso)),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton.icon(
-                      onPressed: () async {
-                        final updated = await Navigator.push<UserProfile?>(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => EditProfilePage(initial: profile),
-                          ),
-                        );
-
-                        if (updated != null) {
-                          setState(() {
-                            _futureProfile = Future.value(updated);
-                          });
-                        } else {
-                          _refresh();
-                        }
-                      },
-                      icon: const Icon(Icons.edit),
-                      label: const Text('Edit Profile'),
+                return ListView(
+                  padding: const EdgeInsets.all(16),
+                  children: [
+                    _ProfileHeaderCard(
+                      displayName: profile.displayName,
+                      handle: profile.handle,
+                      roleLabel: roleText,
+                      isInstructor: isInstructor,
                     ),
-                  ),
-                ],
-              );
-            },
-          ),
-        ),
-      ],
-    ),
-  );
-}
+                    const SizedBox(height: 16),
+                    _InfoCard(
+                      title: 'Account',
+                      children: [
+                        _InfoRow(label: 'RS ID', value: profile.rsId ?? '-'),
+                        _InfoRow(label: 'Username', value: profile.username),
+                        _InfoRow(label: 'Role', value: roleText),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    _InfoCard(
+                      title: 'Body Metrics',
+                      children: [
+                        _InfoRow(
+                          label: 'Height',
+                          value: profile.heightCm == null
+                              ? '-'
+                              : '${profile.heightCm} cm',
+                        ),
+                        _InfoRow(
+                          label: 'Weight',
+                          value: profile.weightKg == null
+                              ? '-'
+                              : '${profile.weightKg} kg',
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    _InfoCard(
+                      title: 'Activity',
+                      children: [
+                        _InfoRow(
+                          label: 'Last login',
+                          value: _formatLastLogin(profile.lastLoginIso),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton.icon(
+                        onPressed: () async {
+                          final updated = await Navigator.push<UserProfile?>(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => EditProfilePage(initial: profile),
+                            ),
+                          );
 
-                    if (updated != null) {
-                      setState(() {
-                        _futureProfile = Future.value(updated);
-                      });
-                    } else {
-                      _refresh();
-                    }
-                  },
-                  icon: const Icon(Icons.edit),
-                  label: const Text('Edit Profile'),
-                ),
-              ),
-              const SizedBox(height: 12),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton.icon(
-                  onPressed: () {
-                    Navigator.pushNamed(context, AppRoutes.blog);
-                  },
-                  icon: const Icon(Icons.article),
-                  label: const Text('View Blog'),
-                ),
-              ),
-            ],
-          );
-        },
+                          if (!mounted) return;
+
+                          if (updated != null) {
+                            setState(() {
+                              _futureProfile = Future.value(updated);
+                            });
+                          } else {
+                            _refresh();
+                          }
+                        },
+                        icon: const Icon(Icons.edit),
+                        label: const Text('Edit Profile'),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton.icon(
+                        onPressed: () {
+                          Navigator.pushNamed(context, AppRoutes.blog);
+                        },
+                        icon: const Icon(Icons.article),
+                        label: const Text('View Blog'),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    SizedBox(
+                      width: double.infinity,
+                      child: OutlinedButton.icon(
+                        onPressed: _logout,
+                        icon: const Icon(Icons.logout),
+                        label: const Text('Log out'),
+                      ),
+                    ),
+                  ],
+                );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }

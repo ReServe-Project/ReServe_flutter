@@ -10,12 +10,8 @@ dependencies:
   flutter:
     sdk: flutter
 
-<<<<<<< HEAD
   google_fonts: ^6.2.1
-  provider: ^6.1.2
-=======
   provider: ^6.1.5+1
->>>>>>> e0ce1a73096d3876554565d7ed3a27d0ad053193
   pbp_django_auth: ^0.4.0
   http: ^1.2.2
   cupertino_icons: ^1.0.8
