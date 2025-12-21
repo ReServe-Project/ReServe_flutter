@@ -4,6 +4,8 @@ import 'package:reserve_mobile/home_search/home/landing_screen.dart';
 import 'package:reserve_mobile/home_search/search/classes_search_page.dart';
 import 'package:reserve_mobile/core/widgets/reserve_navbar.dart'; 
 import 'package:reserve_mobile/core/routes/app_routes.dart';
+import 'package:reserve_mobile/features/checkout/pages/booking_history_page.dart';
+
 
 
 class ReserveDrawer extends StatelessWidget {
@@ -67,8 +69,9 @@ class ReserveDrawer extends StatelessWidget {
             ListTile(
               leading: const Icon(Icons.history_rounded),
               title: const Text("History"),
-              onTap: () => _goTo(context, const HistoryPlaceholder()),
+              onTap: () => _goTo(context, const BookingHistoryPage()),
             ),
+
 
             const Spacer(),
             const Divider(height: 1),

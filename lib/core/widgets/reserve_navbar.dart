@@ -4,6 +4,8 @@ import 'package:provider/provider.dart';
 import '../auth/auth_provider.dart';
 import '../config/app_config.dart';
 import '../routes/app_routes.dart';
+import 'package:reserve_mobile/features/checkout/pages/booking_history_page.dart';
+
 
 
 enum NavItem { home, classes, blog, goals, history }
@@ -79,8 +81,9 @@ class ReserveNavbar extends StatelessWidget {
                     context,
                     "History",
                     active: active == NavItem.history,
-                    onTap: () => _goTo(context, const HistoryPlaceholder()),
+                    onTap: () => _goTo(context, const BookingHistoryPage()),
                   ),
+
                 ],
               ),
             ),
@@ -172,16 +175,7 @@ class PersonalGoalsPlaceholder extends StatelessWidget {
   }
 }
 
-class HistoryPlaceholder extends StatelessWidget {
-  const HistoryPlaceholder({super.key});
 
-  @override
-  Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(child: Text("History Module Placeholder")),
-    );
-  }
-}
 
 class AccountsPlaceholder extends StatelessWidget {
   const AccountsPlaceholder({super.key});

@@ -1,20 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
-import 'package:reserve_mobile/home_search/home/landing_screen.dart';
-
 
 import 'core/auth/auth_provider.dart';
 import 'core/routes/app_router.dart';
 import 'core/theme/app_theme.dart';
 
-import 'widgets/class_reviews_section.dart';
-
 void main() {
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => AuthProvider()),
+        /// 🔐 Django session / cookies
+        Provider<CookieRequest>(
+          create: (_) => CookieRequest(),
+        ),
+
+        /// 🔑 Your existing auth provider
+        ChangeNotifierProvider(
+          create: (_) => AuthProvider(),
+        ),
       ],
       child: const MyApp(),
     ),
@@ -35,4 +39,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
