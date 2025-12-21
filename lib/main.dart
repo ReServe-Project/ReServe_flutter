@@ -5,6 +5,8 @@ import 'core/auth/auth_provider.dart';
 import 'core/routes/app_router.dart';
 import 'core/theme/app_theme.dart';
 
+import 'widgets/class_reviews_section.dart';
+
 void main() {
   runApp(
     MultiProvider(
@@ -30,3 +32,4 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
