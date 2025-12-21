@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/blog_model.dart';
+import '../../../core/utils/django_image_proxy.dart';
 
 class BlogCard extends StatelessWidget {
   final Blog blog;
@@ -31,31 +32,27 @@ class BlogCard extends StatelessWidget {
           // Thumbnail
           Stack(
             children: [
-              Container(
-                height: 160,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(12),
-                    topRight: Radius.circular(12),
-                  ),
-                  color: Colors.grey[300],
-                  image: blog.thumbnail != null && blog.thumbnail!.isNotEmpty
-                      ? DecorationImage(
-                          image: NetworkImage(blog.thumbnail!),
-                          fit: BoxFit.cover,
-                        )
-                      : null,
+              ClipRRect(
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(12),
+                  topRight: Radius.circular(12),
                 ),
-                child: blog.thumbnail == null || blog.thumbnail!.isEmpty
-                    ? Center(
-                        child: Icon(
-                          Icons.image_not_supported,
-                          color: Colors.grey[600],
-                          size: 40,
+                child: SizedBox(
+                  height: 160,
+                  width: double.infinity,
+                  child: (blog.thumbnail != null && blog.thumbnail!.isNotEmpty)
+                      ? _ProxyableThumbnail(url: blog.thumbnail!)
+                      : Container(
+                          color: Colors.grey[300],
+                          child: Center(
+                            child: Icon(
+                              Icons.image_not_supported,
+                              color: Colors.grey[600],
+                              size: 40,
+                            ),
+                          ),
                         ),
-                      )
-                    : null,
+                ),
               ),
               // Action buttons overlay
               Positioned(
@@ -132,6 +129,38 @@ class BlogCard extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class _ProxyableThumbnail extends StatelessWidget {
+  final String url;
+
+  const _ProxyableThumbnail({required this.url});
+
+  @override
+  Widget build(BuildContext context) {
+    return Image.network(
+      url,
+      fit: BoxFit.cover,
+      errorBuilder: (context, error, stackTrace) {
+        return Image.network(
+          DjangoImageProxy.proxyUrl(url),
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) {
+            return Container(
+              color: Colors.grey[300],
+              child: Center(
+                child: Icon(
+                  Icons.image_not_supported,
+                  color: Colors.grey[600],
+                  size: 40,
+                ),
+              ),
+            );
+          },
+        );
+      },
     );
   }
 }
