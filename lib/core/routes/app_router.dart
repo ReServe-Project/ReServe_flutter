@@ -10,7 +10,7 @@ import '../../features/blog/screens/blog_detail_screen.dart';
 
 import '../../home_search/home/landing_screen.dart';
 import '../../home_search/search/classes_search_page.dart';
-import '../widgets/reserve_navbar.dart'; 
+import '../../personal_goal/screens/PersonalGoal_page.dart';
 
 class AppRouter {
   static const String initialRoute = AppRoutes.splash;
@@ -36,6 +36,8 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => const LandingScreen());
       case AppRoutes.classes:
         return MaterialPageRoute(builder: (_) => const ClassesSearchPage());
+      case AppRoutes.personalGoals:
+        return MaterialPageRoute(builder: (_) => const PersonalGoalsPage());
       default:
         return MaterialPageRoute(
           builder: (_) =>
