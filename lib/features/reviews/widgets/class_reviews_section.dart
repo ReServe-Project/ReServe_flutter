@@ -7,12 +7,12 @@ import 'package:reserve_mobile/core/auth/auth_provider.dart';
 
 class ClassReviewsSection extends StatefulWidget {
   final int classId;
-  final bool isMember; // REMOVED: sessionCookie
+  final bool isMember;
 
   const ClassReviewsSection({
     super.key,
     required this.classId,
-    required this.isMember, // REMOVED: sessionCookie
+    required this.isMember,
   });
 
   @override
@@ -78,7 +78,10 @@ class _ClassReviewsSectionState extends State<ClassReviewsSection> {
           ),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
-            child: const Text('Delete', style: TextStyle(color: Colors.red)),
+            child: const Text(
+              'Delete',
+              style: TextStyle(color: Colors.red),
+            ),
           ),
         ],
       ),
@@ -113,7 +116,10 @@ class _ClassReviewsSectionState extends State<ClassReviewsSection> {
 
   double get averageRating {
     if (_reviews.isEmpty) return 0;
-    return _reviews.map((r) => r.rating).reduce((a, b) => a + b) / _reviews.length;
+    return _reviews
+        .map((r) => r.rating)
+        .reduce((a, b) => a + b) /
+        _reviews.length;
   }
 
   @override
@@ -131,19 +137,20 @@ class _ClassReviewsSectionState extends State<ClassReviewsSection> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Header row
+          // Header
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
                 'Reviews (${_reviews.length})',
-                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                style:
+                const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
-
               if (widget.isMember)
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFFF07A3B),
+                    foregroundColor: Colors.white, // ✅
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
                     ),
@@ -163,7 +170,9 @@ class _ClassReviewsSectionState extends State<ClassReviewsSection> {
                 Row(
                   children: List.generate(3, (i) {
                     return Icon(
-                      i + 1 <= averageRating ? Icons.star : Icons.star_border,
+                      i + 1 <= averageRating
+                          ? Icons.star
+                          : Icons.star_border,
                       color: Colors.amber,
                     );
                   }),
@@ -182,6 +191,7 @@ class _ClassReviewsSectionState extends State<ClassReviewsSection> {
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF4C4974),
+                    foregroundColor: Colors.white, // ✅
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
                     ),
@@ -214,15 +224,18 @@ class _ClassReviewsSectionState extends State<ClassReviewsSection> {
                             await _loadReviews();
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
-                                content: Text('Review submitted successfully'),
+                                content:
+                                Text('Review submitted successfully'),
                                 backgroundColor: Colors.green,
                               ),
                             );
                           } catch (e) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
-                                content: Text('Failed to submit review: $e'),
-                                duration: const Duration(seconds: 3),
+                                content:
+                                Text('Failed to submit review: $e'),
+                                duration:
+                                const Duration(seconds: 3),
                               ),
                             );
                           }
@@ -230,7 +243,9 @@ class _ClassReviewsSectionState extends State<ClassReviewsSection> {
                       ),
                     );
                   },
-                  child: Text(_userReview == null ? 'Add Review' : 'Update Review'),
+                  child: Text(
+                    _userReview == null ? 'Add Review' : 'Update Review',
+                  ),
                 ),
 
                 const SizedBox(width: 10),
@@ -239,6 +254,7 @@ class _ClassReviewsSectionState extends State<ClassReviewsSection> {
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.red,
+                      foregroundColor: Colors.white, // ✅
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20),
                       ),
@@ -263,55 +279,70 @@ class _ClassReviewsSectionState extends State<ClassReviewsSection> {
               ),
             )
           else
-            ..._reviews.map((r) => Container(
-              margin: const EdgeInsets.only(bottom: 12),
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: const Color(0xFFF9FAFB),
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: Colors.black12),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(r.user, style: const TextStyle(fontWeight: FontWeight.bold)),
-
-                      if (context.read<AuthProvider>().isLoggedIn &&
-                          context.read<AuthProvider>().username == r.user)
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                          decoration: BoxDecoration(
-                            color: Colors.blue.shade100,
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: const Text(
-                            'Your Review',
-                            style: TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.blue,
+            ..._reviews.map(
+                  (r) => Container(
+                margin: const EdgeInsets.only(bottom: 12),
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF9FAFB),
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(color: Colors.black12),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment:
+                      MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          r.user,
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold),
+                        ),
+                        if (context
+                            .read<AuthProvider>()
+                            .isLoggedIn &&
+                            context
+                                .read<AuthProvider>()
+                                .username ==
+                                r.user)
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 8, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: Colors.blue.shade100,
+                              borderRadius:
+                              BorderRadius.circular(12),
+                            ),
+                            child: const Text(
+                              'Your Review',
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.blue,
+                              ),
                             ),
                           ),
-                        ),
-                    ],
-                  ),
-                  Row(
-                    children: List.generate(3, (i) {
-                      return Icon(
-                        i + 1 <= r.rating ? Icons.star : Icons.star_border,
-                        color: Colors.amber,
-                        size: 16,
-                      );
-                    }),
-                  ),
-                  const SizedBox(height: 6),
-                  Text(r.comment),
-                ],
+                      ],
+                    ),
+                    Row(
+                      children: List.generate(3, (i) {
+                        return Icon(
+                          i + 1 <= r.rating
+                              ? Icons.star
+                              : Icons.star_border,
+                          color: Colors.amber,
+                          size: 16,
+                        );
+                      }),
+                    ),
+                    const SizedBox(height: 6),
+                    Text(r.comment),
+                  ],
+                ),
               ),
-            )),
+            ),
         ],
       ),
     );
