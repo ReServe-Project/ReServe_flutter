@@ -15,6 +15,6 @@ class AppConfig {
     } catch (_) {
       // Platform isn't available on web.
     }
-    return 'http://localhost:8000';
+    return 'https://khayru-rafa-reserve.pbp.cs.ui.ac.id';
   }
 }

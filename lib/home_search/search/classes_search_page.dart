@@ -8,8 +8,6 @@ import 'package:reserve_mobile/home_search/models/fitness_class.dart';
 import 'package:reserve_mobile/home_search/services/classes_service.dart';
 import 'package:reserve_mobile/home_search/search/class_detail_page.dart';
 import 'package:reserve_mobile/home_search/search/class_form_page.dart';
-import 'package:reserve_mobile/home_search/widgets/class_card.dart';
-
 
 class ClassesSearchPage extends StatefulWidget {
   final String? initialCategory; // <-- added
@@ -20,12 +18,9 @@ class ClassesSearchPage extends StatefulWidget {
   State<ClassesSearchPage> createState() => _ClassesSearchPageState();
 }
 
-
 class _ClassesSearchPageState extends State<ClassesSearchPage> {
-  // ================== FILTER STATE ==================
   String selectedCategory = "All Classes";
 
-  // ================== CATEGORIES (UI labels) ==================
   final List<String> categories = const [
     "All Classes",
     "Yoga",
@@ -36,23 +31,19 @@ class _ClassesSearchPageState extends State<ClassesSearchPage> {
     "Ice Skating",
   ];
 
-  // ================== DATA SOURCE ==================
   Future<List<FitnessClass>>? _classesFuture;
 
-  // store role info so other methods (outside build) can use it
   bool _isInstructor = false;
   String _currentUser = "";
 
   @override
   void initState() {
-  super.initState();
-  // ✅ safe: no provider call, just set initial filter if provided
-  final initial = widget.initialCategory;
-  if (initial != null && categories.contains(initial)) {
-    selectedCategory = initial;
+    super.initState();
+    final initial = widget.initialCategory;
+    if (initial != null && categories.contains(initial)) {
+      selectedCategory = initial;
+    }
   }
-}
-
 
   // ---------- Helpers ----------
   String _labelToCode(String label) {
@@ -102,18 +93,15 @@ class _ClassesSearchPageState extends State<ClassesSearchPage> {
   void _goToDetails(FitnessClass c) {
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (_) => ClassDetailPage(fitnessClass: c),
-      ),
+      MaterialPageRoute(builder: (_) => ClassDetailPage(fitnessClass: c)),
     );
   }
 
   void _refreshClasses() {
-  setState(() {
-    _classesFuture = ClassesService.fetchAll(context);
-  });
-}
-
+    setState(() {
+      _classesFuture = ClassesService.fetchAll(context);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -121,7 +109,6 @@ class _ClassesSearchPageState extends State<ClassesSearchPage> {
     _isInstructor = auth.isInstructor;
     _currentUser = auth.username ?? "";
 
-    // ✅ initialize future safely HERE (only once)
     _classesFuture ??= ClassesService.fetchAll(context);
 
     return Scaffold(
@@ -138,7 +125,7 @@ class _ClassesSearchPageState extends State<ClassesSearchPage> {
                     offset: const Offset(0, -32),
                     child: Center(child: _filterPill()),
                   ),
-                  const SizedBox(height: 12),
+                  // const SizedBox(height: 12),
                   _createButtonRow(context, _isInstructor), // instructor-only
                   FutureBuilder<List<FitnessClass>>(
                     future: _classesFuture,
@@ -176,18 +163,14 @@ class _ClassesSearchPageState extends State<ClassesSearchPage> {
     );
   }
 
-  // ================= HERO HEADER =================
   Widget _heroHeader() {
     return SizedBox(
       width: double.infinity,
-      height: 330,
+      height: 200,
       child: Stack(
         children: [
           Positioned.fill(
-            child: Image.asset(
-              "img/hero-classes.png",
-              fit: BoxFit.cover,
-            ),
+            child: Image.asset("img/hero-classes.png", fit: BoxFit.cover),
           ),
           Positioned.fill(
             child: Container(color: Colors.black.withOpacity(0.18)),
@@ -199,8 +182,9 @@ class _ClassesSearchPageState extends State<ClassesSearchPage> {
                 "Our Classes",
                 style: TextStyle(
                   color: Colors.white,
-                  fontSize: 56,
-                  fontWeight: FontWeight.w800,
+                  fontSize: 30,
+                  fontWeight: FontWeight.w700,
+                  fontFamily: 'Poppins',
                 ),
               ),
             ),
@@ -212,7 +196,7 @@ class _ClassesSearchPageState extends State<ClassesSearchPage> {
 
   Widget _filterPill() {
     return Container(
-      constraints: const BoxConstraints(maxWidth: 980),
+      width: 370,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
         color: Colors.white,
@@ -243,7 +227,7 @@ class _ClassesSearchPageState extends State<ClassesSearchPage> {
               ] else if (i != categories.length - 1) ...[
                 const SizedBox(width: 12),
               ],
-            ]
+            ],
           ],
         ),
       ),
@@ -263,10 +247,7 @@ class _ClassesSearchPageState extends State<ClassesSearchPage> {
         decoration: BoxDecoration(
           color: active ? const Color(0xFF6B4A36) : Colors.transparent,
           borderRadius: BorderRadius.circular(999),
-          border: Border.all(
-            color: const Color(0xFF6B4A36),
-            width: 1.5,
-          ),
+          border: Border.all(color: const Color(0xFF6B4A36), width: 1.5),
         ),
         child: Text(
           label,
@@ -280,96 +261,73 @@ class _ClassesSearchPageState extends State<ClassesSearchPage> {
   }
 
   Widget _createButtonRow(BuildContext context, bool isInstructor) {
-  if (!isInstructor) return const SizedBox.shrink();
+    if (!isInstructor) return const SizedBox.shrink();
 
-  return Padding(
-    padding: const EdgeInsets.only(top: 24), // tighter spacing under pill
-    child: Center(
-      child: ElevatedButton(
-        onPressed: () async {
-          final created = await Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (_) => const ClassFormPage(),
-    ),
-  );
-          if (created == true) {
-    setState(() {
-      _classesFuture = ClassesService.fetchAll(context);
-    });
-  }
-        },
-        style: ElevatedButton.styleFrom(
-          backgroundColor: const Color(0xFF6B4A36),
-          foregroundColor: Colors.white,
-          padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 14),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(14),
-          ),
-        ),
-        child: const Text(
-          "+ Create Class",
-          style: TextStyle(fontWeight: FontWeight.w800),
-        ),
+    return ElevatedButton(
+      onPressed: () async {
+        final created = await Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => const ClassFormPage()),
+        );
+        if (created == true) {
+          setState(() {
+            _classesFuture = ClassesService.fetchAll(context);
+          });
+        }
+      },
+      style: ElevatedButton.styleFrom(
+        backgroundColor: const Color.fromARGB(255, 96, 74, 112),
+        foregroundColor: Colors.white,
+        padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 14),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
       ),
-    ),
-  );
-}
+      child: const Text(
+        "+ Create Class",
+        style: TextStyle(fontWeight: FontWeight.w800),
+      ),
+    );
+  }
 
-
-  // ================= PRODUCTS GRID =================
   Widget _productsGrid(List<FitnessClass> products) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(60, 34, 60, 30),
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          int crossAxisCount = 4;
-          if (constraints.maxWidth < 1100) crossAxisCount = 3;
-          if (constraints.maxWidth < 800) crossAxisCount = 2;
-          if (constraints.maxWidth < 520) crossAxisCount = 1;
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        int crossAxisCount = 4;
+        if (constraints.maxWidth < 1100) crossAxisCount = 3;
+        if (constraints.maxWidth < 800) crossAxisCount = 2;
+        if (constraints.maxWidth < 520) crossAxisCount = 1;
 
-          if (products.isEmpty) {
-            return const Padding(
-              padding: EdgeInsets.symmetric(vertical: 40),
-              child: Center(
-                child: Text(
-                  "No classes found.",
-                  style: TextStyle(
-                    fontWeight: FontWeight.w700,
-                    color: Color(0xFF6B4A36),
-                  ),
+        if (products.isEmpty) {
+          return const Padding(
+            padding: EdgeInsets.symmetric(vertical: 40),
+            child: Center(
+              child: Text(
+                "No classes found.",
+                style: TextStyle(
+                  fontWeight: FontWeight.w700,
+                  color: Color(0xFF6B4A36),
                 ),
               ),
-            );
-          }
-
-          return GridView.builder(
-            itemCount: products.length,
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: crossAxisCount,
-              crossAxisSpacing: 26,
-              mainAxisSpacing: 26,
-              mainAxisExtent: 290,
             ),
-            itemBuilder: (context, index) {
-  final c = products[index];
-  return ClassCard(
-    c: c,
-    isInstructor: _isInstructor,
-    currentUser: _currentUser,
-    onChanged: () {
-      setState(() {
-        _classesFuture = ClassesService.fetchAll(context);
-      });
-    },
-  );
-},
-
           );
-        },
-      ),
+        }
+
+        return GridView.builder(
+          itemCount: products.length,
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: crossAxisCount,
+            crossAxisSpacing: 26,
+            mainAxisSpacing: 26,
+            mainAxisExtent: 305,
+          ),
+          itemBuilder: (context, index) {
+            final c = products[index];
+
+            return _productCard(c);
+          },
+        );
+      },
     );
   }
 
@@ -379,20 +337,24 @@ class _ClassesSearchPageState extends State<ClassesSearchPage> {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(18),
+        borderRadius: BorderRadius.circular(20),
+
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.12),
-            blurRadius: 14,
-            offset: const Offset(0, 6),
+            blurRadius: 16,
+            offset: const Offset(0, 8),
           ),
         ],
       ),
+      margin: const EdgeInsets.symmetric(horizontal: 20),
+      padding: const EdgeInsets.fromLTRB(14, 14, 14, 14),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          // image
           ClipRRect(
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(18)),
+            borderRadius: BorderRadius.circular(14),
             child: (c.imageUrl.isNotEmpty)
                 ? Image.network(
                     c.imageUrl,
@@ -401,114 +363,101 @@ class _ClassesSearchPageState extends State<ClassesSearchPage> {
                     errorBuilder: (_, __, ___) => Container(
                       height: 150,
                       color: const Color(0xFFF0E6DE),
-                      child: const Icon(Icons.image_not_supported),
+                      child: const Icon(Icons.image_not_supported, size: 34),
                     ),
                   )
                 : Container(
                     height: 150,
                     color: const Color(0xFFF0E6DE),
-                    child: const Icon(Icons.image),
+                    child: const Icon(Icons.image, size: 34),
                   ),
           ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 14, 16, 10),
-            child: Text(
-              c.name,
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w800),
+
+          const SizedBox(height: 14),
+
+          // title (big)
+          Text(
+            c.name,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(
+              fontSize: 28,
+              fontWeight: FontWeight.w900,
+              height: 1.05,
+              color: Color(0xFF2B2B2B),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Text(
-              "Rp ${c.price}",
-              style: const TextStyle(color: Color(0xFF5C5C5C)),
+
+          const SizedBox(height: 6),
+
+          // price (muted)
+          Text(
+            "Rp ${c.price}",
+            style: const TextStyle(
+              color: Color(0xFF6B6B6B),
+              fontSize: 18,
+              fontWeight: FontWeight.w700,
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 6, 16, 0),
-            child: Text(
-              _codeToLabel(c.category),
-              style: const TextStyle(
-                fontWeight: FontWeight.w700,
-                color: Color(0xFF6B4A36),
-              ),
-            ),
-          ),
+
           const Spacer(),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-            child: canManage
-                ? Row(
-                    children: [
-                      Expanded(
-                        child: ElevatedButton(
-                          onPressed: () => _goToDetails(c),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFFE7773A),
-                            foregroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(vertical: 14),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(14),
-                            ),
-                            elevation: 0,
-                          ),
-                          child: const Text(
-                            "Details",
-                            style: TextStyle(fontWeight: FontWeight.w800),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: OutlinedButton(
-                          onPressed: () {
-                            // TODO: edit
-                          },
-                          style: OutlinedButton.styleFrom(
-                            side: const BorderSide(color: Color(0xFF6B4A36), width: 1.5),
-                            foregroundColor: const Color(0xFF6B4A36),
-                            padding: const EdgeInsets.symmetric(vertical: 14),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(14),
-                            ),
-                          ),
-                          child: const Text("Edit", style: TextStyle(fontWeight: FontWeight.w800)),
-                        ),
-                      ),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: OutlinedButton(
-                          onPressed: () async {
-                            final confirm = await _confirmDelete(context);
-                            if (confirm != true) return;
-                            // TODO: delete
-                          },
-                          style: OutlinedButton.styleFrom(
-                            side: const BorderSide(color: Colors.red, width: 1.5),
-                            foregroundColor: Colors.red,
-                            padding: const EdgeInsets.symmetric(vertical: 14),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(14),
-                            ),
-                          ),
-                          child: const Text("Delete", style: TextStyle(fontWeight: FontWeight.w800)),
-                        ),
-                      ),
-                    ],
-                  )
-                : ElevatedButton(
-                    onPressed: () => _goToDetails(c),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFFE7773A),
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14),
-                      ),
-                      elevation: 0,
-                    ),
-                    child: const Text("Details", style: TextStyle(fontWeight: FontWeight.w800)),
+
+          // bottom row: icons (left) + details button (right)
+          Row(
+            children: [
+              if (canManage) ...[
+                IconButton(
+                  visualDensity: VisualDensity.compact,
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(),
+                  onPressed: () async {
+                    final confirm = await _confirmDelete(context);
+                    if (confirm != true) return;
+                  },
+                  icon: const Icon(
+                    Icons.delete_outline,
+                    color: Colors.red,
+                    size: 30,
                   ),
+                ),
+                const SizedBox(width: 12),
+                IconButton(
+                  visualDensity: VisualDensity.compact,
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(),
+                  onPressed: () {
+                    // TODO: edit
+                  },
+                  icon: const Icon(
+                    Icons.edit_outlined,
+                    color: Color(0xFF1E5BB8),
+                    size: 30,
+                  ),
+                ),
+              ] else ...[
+                const SizedBox(width: 2),
+              ],
+              const Spacer(),
+              SizedBox(
+                width: 150,
+                height: 46,
+                child: ElevatedButton(
+                  onPressed: () => _goToDetails(c),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFFE7773A),
+                    foregroundColor: Colors.white,
+                    elevation: 0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                  ),
+                  child: const Text(
+                    "Details",
+                    style: TextStyle(fontWeight: FontWeight.w800, fontSize: 16),
+                  ),
+                ),
+              ),
+            ],
           ),
         ],
       ),

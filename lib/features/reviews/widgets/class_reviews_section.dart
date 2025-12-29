@@ -141,18 +141,7 @@ class _ClassReviewsSectionState extends State<ClassReviewsSection> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              if (widget.isMember)
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFFF07A3B),
-                    foregroundColor: Colors.white, // ✅
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                  ),
-                  onPressed: () {},
-                  child: const Text('Checkout'),
-                ),
+              
             ],
           ),
 

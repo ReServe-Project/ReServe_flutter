@@ -22,13 +22,14 @@ class _BookingHistoryPageState extends State<BookingHistoryPage> {
   late Future<List<Booking>> _future;
   final Map<int, FitnessClass> _classCache = {};
 
-  // 🎨 COLOR PALETTE (matches blog page)
   static const Color bgCream = Color(0xFFFFF7ED);
   static const Color cardWhite = Colors.white;
-  static const Color primaryOrange = Color(0xFFF97316);
-  static const Color primaryIndigo = Color(0xFF3F3D6B);
+  static const Color titleBrown = Color(0xFF8B4A2B);
   static const Color mutedGray = Color(0xFF6B7280);
   static const Color borderGray = Color(0xFFE5E7EB);
+
+  static const Color dangerRed = Color(0xFFDC2626);
+  static const Color editBlue = Color(0xFF3B82F6);
 
   @override
   void initState() {
@@ -61,75 +62,123 @@ class _BookingHistoryPageState extends State<BookingHistoryPage> {
     return "${AppConfig.baseUrl}$imageUrl";
   }
 
+  String _formatDateTimeLikeScreenshot(DateTime dt) {
+    final local = dt.toLocal();
+    const months = <String>[
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+    ];
+
+    final day = local.day.toString().padLeft(2, "0");
+    final month = months[local.month - 1];
+    final year = local.year.toString();
+
+    final hour = local.hour.toString().padLeft(2, "0");
+    final minute = local.minute.toString().padLeft(2, "0");
+
+    return "$day $month $year $hour.$minute";
+  }
+
+  ButtonStyle _pillStyle({
+    required Color bg,
+    required Color fg,
+  }) {
+    return ElevatedButton.styleFrom(
+      backgroundColor: bg,
+      foregroundColor: fg,
+      elevation: 0,
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+      minimumSize: const Size(0, 30),
+      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(999),
+      ),
+      textStyle: const TextStyle(
+        fontSize: 12,
+        fontWeight: FontWeight.w700,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: bgCream,
-
-      bottomNavigationBar: const ReserveNavbar(
-        active: NavItem.history,
-      ),
-
+      bottomNavigationBar: const ReserveNavbar(active: NavItem.history),
       body: SafeArea(
-        child: Center(
-          child: Container(
-            constraints: const BoxConstraints(maxWidth: 1100),
-            margin: const EdgeInsets.all(24),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                /// ================= HEADER =================
-                const Text(
-                  "History",
-                  style: TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.w800, // ✅ heavier bold
-                    color: primaryIndigo,
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final w = constraints.maxWidth;
+            final horizontalPad = w < 420 ? 14.0 : 18.0;
+            final topPad = w < 420 ? 14.0 : 18.0;
+
+            return Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 700),
+                child: Padding(
+                  padding: EdgeInsets.fromLTRB(
+                    horizontalPad,
+                    topPad,
+                    horizontalPad,
+                    12,
                   ),
-                ),
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 4),
+                      const Text(
+                        "History",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.w800,
+                          color: Color(0xFF1F2937),
+                        ),
+                      ),
+                      const SizedBox(height: 14),
 
-                const SizedBox(height: 30),
+                      Expanded(
+                        child: FutureBuilder<List<Booking>>(
+                          future: _future,
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return const Center(
+                                child: CircularProgressIndicator(),
+                              );
+                            }
 
-                /// ================= CONTENT =================
-                Expanded(
-                  child: FutureBuilder<List<Booking>>(
-                    future: _future,
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState ==
-                          ConnectionState.waiting) {
-                        return const Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      }
+                            if (snapshot.hasError) {
+                              return Center(
+                                child: Text(snapshot.error.toString()),
+                              );
+                            }
 
-                      if (snapshot.hasError) {
-                        return Center(
-                          child: Text(snapshot.error.toString()),
-                        );
-                      }
+                            final bookings = snapshot.data ?? [];
+                            if (bookings.isEmpty) {
+                              return const Center(
+                                child: Text("You have no booking history."),
+                              );
+                            }
 
-                      final bookings = snapshot.data!;
-                      if (bookings.isEmpty) {
-                        return const Center(
-                          child: Text("You have no booking history."),
-                        );
-                      }
-
-                      return Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          /// ============ MAIN COLUMN ============
-                          Expanded(
-                            flex: 3,
-                            child: ListView.separated(
+                            return ListView.separated(
+                              padding: const EdgeInsets.only(bottom: 10),
                               itemCount: bookings.length,
                               separatorBuilder: (_, __) =>
-                              const SizedBox(height: 20),
+                                  const SizedBox(height: 12),
                               itemBuilder: (context, index) {
                                 final b = bookings[index];
 
                                 return Container(
-                                  padding: const EdgeInsets.all(18),
                                   decoration: BoxDecoration(
                                     color: cardWhite,
                                     borderRadius: BorderRadius.circular(14),
@@ -137,109 +186,103 @@ class _BookingHistoryPageState extends State<BookingHistoryPage> {
                                     boxShadow: const [
                                       BoxShadow(
                                         color: Colors.black12,
-                                        blurRadius: 10,
-                                        offset: Offset(0, 4),
+                                        blurRadius: 8,
+                                        offset: Offset(0, 3),
                                       )
                                     ],
                                   ),
+                                  padding: const EdgeInsets.all(10),
                                   child: Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
                                     children: [
-                                      /// IMAGE
+                                      // IMAGE (small + rounded)
                                       FutureBuilder<FitnessClass?>(
-                                        future:
-                                        _fetchClass(context, b.classId),
+                                        future: _fetchClass(context, b.classId),
                                         builder: (context, snap) {
                                           final imageUrl =
                                               snap.data?.imageUrl ?? "";
                                           final fullUrl =
-                                          _resolveImageUrl(imageUrl);
+                                              _resolveImageUrl(imageUrl);
 
                                           return ClipRRect(
                                             borderRadius:
-                                            BorderRadius.circular(12),
+                                                BorderRadius.circular(10),
                                             child: fullUrl.isEmpty
                                                 ? Container(
-                                              width: 120,
-                                              height: 90,
-                                              color: Colors.grey.shade300,
-                                              child: const Center(
-                                                child: Text("No Image"),
-                                              ),
-                                            )
+                                                    width: 56,
+                                                    height: 56,
+                                                    color: Colors.grey.shade300,
+                                                    alignment: Alignment.center,
+                                                    child: const Icon(
+                                                      Icons.image_not_supported,
+                                                      size: 18,
+                                                      color: Colors.white,
+                                                    ),
+                                                  )
                                                 : Image.network(
-                                              fullUrl,
-                                              width: 120,
-                                              height: 90,
-                                              fit: BoxFit.cover,
-                                            ),
+                                                    fullUrl,
+                                                    width: 56,
+                                                    height: 56,
+                                                    fit: BoxFit.cover,
+                                                  ),
                                           );
                                         },
                                       ),
 
-                                      const SizedBox(width: 20),
+                                      const SizedBox(width: 12),
 
-                                      /// TEXT
+                                      // MIDDLE: Title
                                       Expanded(
-                                        child: Column(
-                                          crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              b.className,
-                                              style: const TextStyle(
-                                                fontSize: 20,
-                                                fontWeight:
-                                                FontWeight.w700, // ✅ stronger
-                                                color: primaryOrange,
-                                              ),
-                                            ),
-                                            const SizedBox(height: 6),
-                                            Text(
-                                              "${b.fullName} • ${b.phoneNumber}",
-                                              style: const TextStyle(
-                                                color: mutedGray,
-                                              ),
-                                            ),
-                                          ],
+                                        child: Text(
+                                          b.className,
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: const TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.w800,
+                                            color: titleBrown,
+                                          ),
                                         ),
                                       ),
 
-                                      /// RIGHT SIDE
+                                      const SizedBox(width: 10),
+
                                       Column(
                                         crossAxisAlignment:
-                                        CrossAxisAlignment.end,
+                                            CrossAxisAlignment.end,
                                         children: [
                                           Text(
-                                            b.bookingDate
-                                                .toLocal()
-                                                .toString()
-                                                .substring(0, 16),
+                                            _formatDateTimeLikeScreenshot(
+                                                b.bookingDate),
                                             style: const TextStyle(
-                                              fontSize: 12,
+                                              fontSize: 11,
                                               color: mutedGray,
+                                              fontWeight: FontWeight.w600,
                                             ),
                                           ),
-                                          const SizedBox(height: 6),
-
+                                          const SizedBox(height: 2),
                                           FutureBuilder<FitnessClass?>(
                                             future: _fetchClass(
                                                 context, b.classId),
                                             builder: (_, snap) {
+                                              final loc =
+                                                  (snap.data?.location ?? "");
                                               return Text(
-                                                snap.data?.location ?? "",
+                                                loc,
                                                 style: const TextStyle(
-                                                  fontSize: 12,
+                                                  fontSize: 11,
                                                   color: mutedGray,
+                                                  fontWeight: FontWeight.w600,
                                                 ),
                                               );
                                             },
                                           ),
-
-                                          const SizedBox(height: 12),
-
+                                          const SizedBox(height: 8),
                                           Row(
+                                            mainAxisSize: MainAxisSize.min,
                                             children: [
-                                              OutlinedButton(
+                                              ElevatedButton(
                                                 onPressed: () async {
                                                   await BookingService
                                                       .deleteBooking(
@@ -248,22 +291,11 @@ class _BookingHistoryPageState extends State<BookingHistoryPage> {
                                                   );
                                                   _reload();
                                                 },
-                                                style:
-                                                OutlinedButton.styleFrom(
-                                                  foregroundColor:
-                                                  primaryOrange,
-                                                  side: const BorderSide(
-                                                    color: primaryOrange,
-                                                  ),
-                                                  shape:
-                                                  RoundedRectangleBorder(
-                                                    borderRadius:
-                                                    BorderRadius.circular(
-                                                        10),
-                                                  ),
+                                                style: _pillStyle(
+                                                  bg: dangerRed,
+                                                  fg: Colors.white,
                                                 ),
-                                                child:
-                                                const Text("Delete"),
+                                                child: const Text("Delete"),
                                               ),
                                               const SizedBox(width: 8),
                                               ElevatedButton(
@@ -273,103 +305,61 @@ class _BookingHistoryPageState extends State<BookingHistoryPage> {
                                                     MaterialPageRoute(
                                                       builder: (_) =>
                                                           EditBookingPage(
-                                                            booking: b,
-                                                          ),
+                                                        booking: b,
+                                                      ),
                                                     ),
                                                   );
                                                   _reload();
                                                 },
-                                                style:
-                                                ElevatedButton.styleFrom(
-                                                  backgroundColor:
-                                                  primaryIndigo,
-                                                  foregroundColor:
-                                                  Colors.white, // ✅ white text
-                                                  shape:
-                                                  RoundedRectangleBorder(
-                                                    borderRadius:
-                                                    BorderRadius.circular(
-                                                        10),
-                                                  ),
+                                                style: _pillStyle(
+                                                  bg: editBlue,
+                                                  fg: Colors.white,
                                                 ),
                                                 child: const Text("Edit"),
                                               ),
                                             ],
-                                          )
+                                          ),
                                         ],
-                                      )
+                                      ),
                                     ],
                                   ),
                                 );
                               },
+                            );
+                          },
+                        ),
+                      ),
+
+                      const SizedBox(height: 10),
+                      SizedBox(
+                        width: double.infinity,
+                        child: OutlinedButton(
+                          onPressed: () {
+                            Navigator.pushReplacementNamed(
+                              context,
+                              AppRoutes.classes,
+                            );
+                          },
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: const Color(0xFF1F2937),
+                            side: const BorderSide(color: borderGray),
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            textStyle: const TextStyle(
+                              fontWeight: FontWeight.w700,
                             ),
                           ),
-
-                          const SizedBox(width: 30),
-
-                          /// ============ SIDEBAR ============
-                          Expanded(
-                            flex: 1,
-                            child: Container(
-                              padding: const EdgeInsets.all(24),
-                              decoration: BoxDecoration(
-                                color: cardWhite,
-                                borderRadius: BorderRadius.circular(16),
-                                border: Border.all(color: borderGray),
-                              ),
-                              child: Column(
-                                children: [
-                                  Image.asset(
-                                    "assets/images/track.png",
-                                    height: 120,
-                                  ),
-                                  const SizedBox(height: 20),
-                                  const Text(
-                                    "Check out more classes!",
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
-                                      color: primaryIndigo,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 16),
-                                  ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: primaryIndigo,
-                                      foregroundColor:
-                                      Colors.white, // ✅ white text
-                                      padding:
-                                      const EdgeInsets.symmetric(
-                                        horizontal: 28,
-                                        vertical: 12,
-                                      ),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                        BorderRadius.circular(12),
-                                      ),
-                                    ),
-                                    onPressed: () {
-                                      Navigator.pushReplacementNamed(
-                                        context,
-                                        AppRoutes.classes,
-                                      );
-                                    },
-                                    child:
-                                    const Text("Explore more"),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      );
-                    },
+                          child: const Text("Explore more classes"),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-              ],
-            ),
-          ),
+              ),
+            );
+          },
         ),
       ),
     );
